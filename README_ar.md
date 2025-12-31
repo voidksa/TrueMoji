@@ -35,6 +35,9 @@
 إذا واجهت أي مشاكل أو لديك اقتراحات، يرجى فتح تذكرة على GitHub:
 [الإبلاغ عن مشكلة](https://github.com/voidksa/TrueMoji/issues)
 
+## الخصوصية (Privacy)
+لمعرفة كيفية تعاملنا مع بياناتك، يرجى مراجعة [سياسة الخصوصية](PRIVACY.md).
+
 ## الترخيص (License)
 هذا المشروع مرخص تحت رخصة [MIT License](LICENSE).
 يمكنك عمل فورك (Fork) وتطوير المشروع للأفضل، ولكن **يجب** ذكر الحقوق للمطور الأصلي (**voidksa**) ووضع رابط للمستودع الأصلي [voidksa/TrueMoji](https://github.com/voidksa/TrueMoji).

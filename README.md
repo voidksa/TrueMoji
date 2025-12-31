@@ -35,6 +35,9 @@ TrueMoji replaces native system emojis with beautiful, high-quality image sets l
 If you encounter any issues or have suggestions, please open an issue on GitHub:
 [Report an Issue](https://github.com/voidksa/TrueMoji/issues)
 
+## Privacy
+For information on how we handle your data, please review our [Privacy Policy](PRIVACY.md).
+
 ## License
 This project is licensed under the [MIT License](LICENSE).
 You are free to fork and improve this project, but you must provide appropriate credit to the original author (**voidksa**) and link back to the original repository [voidksa/TrueMoji](https://github.com/voidksa/TrueMoji).
