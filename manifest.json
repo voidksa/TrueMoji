@@ -1,0 +1,46 @@
+{
+    "manifest_version": 3,
+    "name": "TrueMoji",
+    "version": "1.0.0",
+    "description": "Render emoji on the web with iPhone-style images.",
+    "icons": {
+        "16": "icon.png",
+        "32": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    },
+    "permissions": [
+        "storage",
+        "tabs",
+        "notifications",
+        "alarms"
+    ],
+    "host_permissions": [
+        "https://cdn.jsdelivr.net/*",
+        "https://raw.githubusercontent.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        }
+    ],
+    "options_page": "options.html",
+    "action": {
+        "default_title": "TrueMoji",
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icon.png",
+            "32": "icon.png"
+        }
+    }
+}

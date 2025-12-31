@@ -1,0 +1,340 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>TrueMoji Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --card: #fff;
+      --fg: #111;
+      --muted: #6b7280;
+      --accent: #0a66c2;
+      --border: #e5e7eb
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0f14;
+        --card: #11161c;
+        --fg: #e5e7eb;
+        --muted: #9aa0a6;
+        --accent: #4ea1ff;
+        --border: #1f2937;
+      }
+    }
+
+    body {
+      font-family: system-ui, Segoe UI, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg)
+    }
+
+    :lang(ar) {
+      font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 0 20px
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px
+    }
+
+    header h1 {
+      font-size: 22px;
+      margin: 0
+    }
+
+    .lang-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--accent);
+      padding: 6px 12px;
+      font-weight: 600;
+      background: var(--card);
+    }
+
+    header a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600
+    }
+
+    .gh {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card)
+    }
+
+    .gh svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .row:first-child {
+      border-top: none
+    }
+
+    .label {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .status {
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    select,
+    input[type=checkbox] {
+      font-size: 14px
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 28px
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 999px;
+      transition: background .2s
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      top: 3px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      transition: transform .2s, border-color .2s
+    }
+
+    .switch input:checked+.slider {
+      background: rgba(78, 161, 255, .5)
+    }
+
+    .switch input:checked+.slider::before {
+      transform: translateX(20px);
+      border-color: var(--accent)
+    }
+
+    .seg {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .seg-btn {
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--fg);
+      cursor: pointer
+    }
+
+    .seg-btn.selected {
+      border-color: var(--accent);
+      color: var(--accent)
+    }
+
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px
+    }
+
+    button {
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--fg);
+      cursor: pointer
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+      margin-bottom: 8px
+    }
+
+    .preview {
+      margin-top: 12px;
+      font-size: 28px
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+      gap: 12px;
+      justify-items: center;
+    }
+
+    .test-grid .emoji {
+      font-size: 24px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .load-more-container {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .load-more-btn {
+      padding: 10px 24px;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--fg);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .load-more-btn:hover {
+      background: rgba(78, 161, 255, .1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="icon.png" width="32" height="32" alt="TrueMoji Icon">
+        <h1 data-i18n="title">TrueMoji</h1>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <button class="lang-toggle" id="langToggle">AR</button>
+        <a class="gh" href="https://github.com/voidksa/TrueMoji" target="_blank">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </header>
+    <div class="card">
+      <div class="row">
+        <div class="label"><span data-i18n="enableLabel">Enable TrueMoji</span> <span class="status"
+            id="enabledStatus"></span></div>
+        <label class="switch">
+          <input type="checkbox" id="enabled">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="row">
+        <div class="label"><span data-i18n="setLabel">Image set</span> <span class="status" id="setStatus"></span></div>
+        <div class="seg" id="setSeg">
+          <button class="seg-btn" data-set="apple" data-i18n-set="apple">Apple</button>
+          <button class="seg-btn" data-set="google" data-i18n-set="google">Google</button>
+          <button class="seg-btn" data-set="fluent-color" data-i18n-set="fluent">Fluent (Color)</button>
+          <button class="seg-btn" data-set="twitter" data-i18n-set="twitter">Twitter</button>
+          <button class="seg-btn" data-set="facebook" data-i18n-set="facebook">Facebook</button>
+          <button class="seg-btn" data-set="facebook-old" data-i18n-set="facebookOld">FB (Old)</button>
+          <button class="seg-btn" data-set="openmoji" data-i18n-set="openmoji">OpenMoji</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label" data-i18n="strictLabel">Strict set only</div>
+        <label class="switch">
+          <input type="checkbox" id="strict">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="hint" data-i18n="strictHint">When enabled, TrueMoji uses only the selected image set. If an emoji is
+        missing in that set, it
+        remains as native text. Disable to allow fallback to other sets when an image is unavailable.</div>
+      <div class="row">
+        <div class="label" data-i18n="autoReloadLabel">Auto reload pages</div>
+        <label class="switch">
+          <input type="checkbox" id="autoReload">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="hint" data-i18n="autoReloadHint">Automatically reload open pages when you change the image set or
+        settings.</div>
+      <div class="actions">
+        <button id="reloadTab" data-i18n="reloadTab">Reload tab</button>
+        <button id="toggleTest" data-i18n="preview">Preview Emojis</button>
+        <button id="checkUpdateBtn" data-i18n="checkUpdate">Check for update</button>
+      </div>
+      <div class="preview">😀 🇸🇦 ❤️ 👍🏻 #️⃣</div>
+      <div id="testArea" style="display:none; margin-top:20px; border-top:1px solid var(--border); padding-top:20px;">
+        <!-- Test content will be injected here -->
+      </div>
+    </div>
+  </div>
+  <script src="i18n.js"></script>
+  <script src="options.js"></script>
+</body>
+
+</html>
