@@ -30,11 +30,10 @@ TrueMoji replaces native system emojis with beautiful, high-quality image sets l
 ![Options Page](screenshots/Options_en.png)
 
 ## Installation
-1. Download the latest release (`.zip` file) from the [Releases page](https://github.com/voidksa/TrueMoji/releases/latest).
-2. Extract the files.
-3. Open Chrome/Edge and go to `chrome://extensions`.
-4. Enable "Developer mode" (top right).
-5. Click "Load unpacked" and select the extracted folder.
+1. Go to the [Chrome Web Store page](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg).
+2. Click **Add to Chrome**.
+3. Confirm by clicking **Add extension**.
+4. Enjoy beautiful emojis everywhere!
 
 ## Support
 If you encounter any issues or have suggestions, please open an issue on GitHub:
