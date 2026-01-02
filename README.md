@@ -9,6 +9,11 @@ Tired of boring default browser emojis? Or seeing empty squares where flags shou
 
 TrueMoji replaces native system emojis with beautiful, high-quality image sets like Apple (iOS), Google, Twitter, and more. Enjoy a consistent, vibrant, and fully expressive emoji experience on every website you visit.
 
+## See the Difference
+| Before (Default System) | After (TrueMoji - Apple Style) |
+|:-----------------------:|:------------------------------:|
+| ![Before](screenshots/flags-before.png) | ![After](screenshots/flags-after.png) |
+
 ## Features
 - **Multiple Emoji Sets**: Choose between Apple, Google, Twitter, Facebook, OpenMoji, and Fluent Design.
 - **Strict Mode**: Force use of selected set only.
