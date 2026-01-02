@@ -12,7 +12,7 @@ TrueMoji replaces native system emojis with beautiful, high-quality image sets l
 ## See the Difference
 | Before (Default System) | After (TrueMoji - Apple Style) |
 |:-----------------------:|:------------------------------:|
-| <img src="screenshots/flags-before.png" width="300" /> | <img src="screenshots/flags-after.png" width="300" /> |
+| <img src="screenshots/flags-before.png" width="100%" /> | <img src="screenshots/flags-after.png" width="100%" /> |
 
 ## Features
 - **Multiple Emoji Sets**: Choose between Apple, Google, Twitter, Facebook, OpenMoji, and Fluent Design.
