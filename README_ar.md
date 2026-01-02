@@ -2,7 +2,7 @@
   <img src="icon.png" width="128" alt="TrueMoji Icon" />
   <h1>TrueMoji</h1>
 
-  [![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-متوفر_الآن-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
+  [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
 </div>
 
 مللت من إيموجيات المتصفح التقليدية؟ أو تعاني من عدم ظهور بعض الرموز مثل الأعلام؟ **TrueMoji هو الحل.**

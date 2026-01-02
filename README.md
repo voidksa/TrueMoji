@@ -2,7 +2,7 @@
   <img src="icon.png" width="128" alt="TrueMoji Icon" />
   <h1>TrueMoji</h1>
 
-  [![Download](https://img.shields.io/badge/Download-Latest_Release-blue?style=for-the-badge&logo=google-chrome)](https://github.com/voidksa/TrueMoji/releases/latest)
+  [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
 </div>
 
 Tired of boring default browser emojis? Or seeing empty squares where flags should be? **TrueMoji is the solution.**
