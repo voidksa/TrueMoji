@@ -7,6 +7,8 @@ const enabledEl = document.getElementById('enabled')
 const segEl = document.getElementById('setSeg')
 const enabledStatusEl = document.getElementById('enabledStatus')
 const setStatusEl = document.getElementById('setStatus')
+const strictStatusEl = document.getElementById('strictStatus')
+const autoReloadStatusEl = document.getElementById('autoReloadStatus')
 const strictEl = document.getElementById('strict')
 const autoReloadEl = document.getElementById('autoReload')
 const reloadEl = document.getElementById('reloadTab')
@@ -15,6 +17,16 @@ const testAreaEl = document.getElementById('testArea')
 const previewEl = document.querySelector('.preview')
 const langToggleEl = document.getElementById('langToggle')
 const checkUpdateBtn = document.getElementById('checkUpdateBtn')
+const emojiSizeEl = document.getElementById('emojiSize')
+const emojiSizeValueEl = document.getElementById('emojiSizeValue')
+const excludeListEl = document.getElementById('excludeList')
+const showOriginalEl = document.getElementById('showOriginal')
+const shortcutInputEl = document.getElementById('shortcutInput')
+const clearShortcutBtn = document.getElementById('clearShortcutBtn')
+const customDomainInputEl = document.getElementById('customDomainInput')
+const customSetSelectEl = document.getElementById('customSetSelect')
+const addRuleBtnEl = document.getElementById('addRuleBtn')
+const customRulesListEl = document.getElementById('customRulesList')
 let currentLang = DEFAULT_LANG_KEY
 const DATA_URL = 'https://cdn.jsdelivr.net/npm/emoji-datasource@latest/emoji.json'
 function SET_BASE(set) { return `https://cdn.jsdelivr.net/npm/emoji-datasource-${set}@latest/img/${set}/64/` }
@@ -229,6 +241,16 @@ function updateEnabledStatus() {
     enabledStatusEl.textContent = enabledEl.checked ? t.statusOn : t.statusOff
 }
 
+function updateStrictStatus() {
+    const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
+    if (strictStatusEl) strictStatusEl.textContent = strictEl.checked ? t.statusOn : t.statusOff
+}
+
+function updateAutoReloadStatus() {
+    const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
+    if (autoReloadStatusEl && autoReloadEl) autoReloadStatusEl.textContent = autoReloadEl.checked ? t.statusOn : t.statusOff
+}
+
 function updateSetStatus(selected) {
     const s = selected || (segEl.querySelector('.seg-btn.selected')?.dataset.set || DEFAULT_SET)
     const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
@@ -257,7 +279,62 @@ function updateLangToggle() {
     langToggleEl.textContent = currentLang === 'en' ? 'AR' : 'EN'
 }
 
-chrome.storage.sync.get({ enabled: DEFAULT_ENABLED, set: DEFAULT_SET, strict: DEFAULT_STRICT, autoReload: false, lang: DEFAULT_LANG_KEY }, v => {
+function renderCustomRules(rules) {
+    if (!customRulesListEl) return
+    customRulesListEl.innerHTML = ''
+    const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
+
+    if (!rules || !Array.isArray(rules)) return
+
+    rules.forEach((rule, index) => {
+        const row = document.createElement('div')
+        row.style.display = 'flex'
+        row.style.alignItems = 'center'
+        row.style.gap = '8px'
+        row.style.padding = '8px'
+        row.style.border = '1px solid var(--border)'
+        row.style.borderRadius = '8px'
+        row.style.background = 'var(--bg)'
+
+        const domain = document.createElement('span')
+        domain.textContent = rule.domain
+        domain.style.flex = '1'
+        domain.style.fontWeight = '500'
+
+        const set = document.createElement('span')
+        const setName = (t[rule.set] || rule.set)
+        set.textContent = setName
+        set.className = 'status'
+
+        const removeBtn = document.createElement('button')
+        removeBtn.textContent = t.removeRule
+        removeBtn.style.padding = '4px 8px'
+        removeBtn.style.fontSize = '12px'
+        removeBtn.addEventListener('click', () => {
+            rules.splice(index, 1)
+            chrome.storage.sync.set({ customSiteSets: rules })
+            renderCustomRules(rules)
+        })
+
+        row.appendChild(domain)
+        row.appendChild(set)
+        row.appendChild(removeBtn)
+        customRulesListEl.appendChild(row)
+    })
+}
+
+chrome.storage.sync.get({
+    enabled: DEFAULT_ENABLED,
+    set: DEFAULT_SET,
+    strict: DEFAULT_STRICT,
+    autoReload: false,
+    lang: DEFAULT_LANG_KEY,
+    emojiSize: 1.0,
+    excludedDomains: '',
+    showOriginal: false,
+    shortcutKey: '',
+    customSiteSets: []
+}, v => {
     currentLang = v.lang || DEFAULT_LANG_KEY
     applyLanguage(currentLang)
     updateLangToggle()
@@ -269,7 +346,24 @@ chrome.storage.sync.get({ enabled: DEFAULT_ENABLED, set: DEFAULT_SET, strict: DE
         b.classList.toggle('selected', b.dataset.set === current)
     }
     strictEl.checked = !!v.strict
-    if (autoReloadEl) autoReloadEl.checked = !!v.autoReload
+    updateStrictStatus()
+    if (autoReloadEl) {
+        autoReloadEl.checked = !!v.autoReload
+        updateAutoReloadStatus()
+    }
+
+    if (emojiSizeEl) {
+        emojiSizeEl.value = v.emojiSize || 1.0
+        emojiSizeValueEl.textContent = (v.emojiSize || 1.0) + 'x'
+    }
+    if (excludeListEl) {
+        excludeListEl.value = v.excludedDomains || ''
+    }
+
+    if (showOriginalEl) showOriginalEl.checked = !!v.showOriginal
+    if (shortcutInputEl) shortcutInputEl.value = v.shortcutKey || ''
+    if (customRulesListEl) renderCustomRules(v.customSiteSets || [])
+
     updateSetStatus(current)
     loadData().then(renderPreview)
 })
@@ -291,11 +385,117 @@ enabledEl.addEventListener('change', () => {
     renderPreview()
 })
 strictEl.addEventListener('change', () => {
+    updateStrictStatus()
     chrome.storage.sync.set({ strict: strictEl.checked })
 })
 if (autoReloadEl) {
     autoReloadEl.addEventListener('change', () => {
+        updateAutoReloadStatus()
         chrome.storage.sync.set({ autoReload: autoReloadEl.checked })
+    })
+}
+
+if (emojiSizeEl) {
+    emojiSizeEl.addEventListener('input', () => {
+        emojiSizeValueEl.textContent = emojiSizeEl.value + 'x'
+        chrome.storage.sync.set({ emojiSize: parseFloat(emojiSizeEl.value) })
+        renderPreview()
+    })
+}
+
+if (excludeListEl) {
+    excludeListEl.addEventListener('change', () => {
+        const raw = excludeListEl.value
+        const cleaned = raw.split('\n').map(line => {
+            let l = line.trim()
+            if (!l) return ''
+            try {
+                const url = new URL(l.match(/^https?:\/\//) ? l : `http://${l}`)
+                return url.hostname.replace(/^www\./, '')
+            } catch (e) {
+                return l.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0]
+            }
+        }).filter(Boolean).join('\n')
+
+        if (excludeListEl.value !== cleaned) {
+            excludeListEl.value = cleaned
+        }
+        chrome.storage.sync.set({ excludedDomains: cleaned })
+    })
+}
+
+if (showOriginalEl) {
+    showOriginalEl.addEventListener('change', () => {
+        chrome.storage.sync.set({ showOriginal: showOriginalEl.checked })
+    })
+}
+
+if (shortcutInputEl) {
+    shortcutInputEl.addEventListener('keydown', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        // Allow clearing with Backspace/Delete
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            shortcutInputEl.value = ''
+            chrome.storage.sync.set({ shortcutKey: '' })
+            return
+        }
+
+        // Ignore standalone modifier keys
+        if (['Control', 'Alt', 'Shift', 'Meta'].includes(e.key)) return
+
+        const parts = []
+        if (e.ctrlKey) parts.push('Ctrl')
+        if (e.altKey) parts.push('Alt')
+        if (e.shiftKey) parts.push('Shift')
+        if (e.metaKey) parts.push('Meta')
+
+        // Add the main key (uppercase)
+        parts.push(e.key.length === 1 ? e.key.toUpperCase() : e.key)
+
+        const shortcut = parts.join('+')
+        shortcutInputEl.value = shortcut
+        chrome.storage.sync.set({ shortcutKey: shortcut })
+    })
+
+    shortcutInputEl.addEventListener('click', () => {
+        // Just focus
+    })
+}
+
+if (clearShortcutBtn && shortcutInputEl) {
+    clearShortcutBtn.addEventListener('click', () => {
+        shortcutInputEl.value = ''
+        chrome.storage.sync.set({ shortcutKey: '' })
+    })
+}
+
+if (addRuleBtnEl && customDomainInputEl && customSetSelectEl) {
+    addRuleBtnEl.addEventListener('click', () => {
+        const raw = customDomainInputEl.value.trim()
+        let domain = ''
+        try {
+            const url = new URL(raw.match(/^https?:\/\//) ? raw : `http://${raw}`)
+            domain = url.hostname.replace(/^www\./, '')
+        } catch (e) {
+            domain = raw.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0]
+        }
+        domain = domain.toLowerCase()
+        const set = customSetSelectEl.value
+
+        if (!domain) return
+
+        chrome.storage.sync.get({ customSiteSets: [] }, v => {
+            const rules = v.customSiteSets || []
+            // Remove existing rule for this domain if any
+            const newRules = rules.filter(r => r.domain !== domain)
+            newRules.push({ domain, set })
+            chrome.storage.sync.set({ customSiteSets: newRules }, () => {
+                renderCustomRules(newRules)
+                customDomainInputEl.value = ''
+            })
+        })
     })
 }
 
@@ -305,6 +505,8 @@ langToggleEl.addEventListener('click', () => {
     applyLanguage(currentLang)
     updateLangToggle()
     updateEnabledStatus()
+    updateStrictStatus()
+    updateAutoReloadStatus()
     updateSetStatus()
     renderPreview()
 })
@@ -316,6 +518,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
             applyLanguage(currentLang)
             updateLangToggle()
             updateEnabledStatus()
+            updateStrictStatus()
+            updateAutoReloadStatus()
             updateSetStatus()
             renderPreview()
         }
@@ -334,10 +538,20 @@ chrome.storage.onChanged.addListener((changes, area) => {
         }
         if (changes.strict) {
             strictEl.checked = !!changes.strict.newValue
+            updateStrictStatus()
             renderPreview()
         }
         if (changes.autoReload && autoReloadEl) {
             autoReloadEl.checked = !!changes.autoReload.newValue
+            updateAutoReloadStatus()
+        }
+        if (changes.emojiSize && emojiSizeEl) {
+            emojiSizeEl.value = changes.emojiSize.newValue
+            emojiSizeValueEl.textContent = changes.emojiSize.newValue + 'x'
+            renderPreview()
+        }
+        if (changes.excludedDomains && excludeListEl) {
+            excludeListEl.value = changes.excludedDomains.newValue
         }
     }
 })

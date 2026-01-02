@@ -27,7 +27,24 @@ const TRANSLATIONS = {
     visitRepo: "Visit Repository",
     autoReloadLabel: "Auto reload pages",
     autoReloadHint: "Automatically reload open pages when you change the image set or settings.",
-    loadMore: "Load more"
+    loadMore: "Load more",
+    emojiSizeLabel: "Emoji Size",
+    emojiSizeHint: "Adjust the size of the emoji images relative to the text.",
+    excludeListLabel: "Excluded Domains",
+    excludeListHint: "Enter domains where TrueMoji should be disabled (one per line). Example: docs.google.com",
+    excludePlaceholder: "example.com\ndocs.google.com",
+    excludeSite: "Disable on this site",
+    showOriginalLabel: "Show original on hover",
+    showOriginalHint: "Show the original native emoji when you hover over the replaced image.",
+    shortcutLabel: "Keyboard Shortcut",
+    shortcutHint: "Click the input and press your desired key combination to toggle TrueMoji.",
+    shortcutPlaceholder: "Click to record shortcut",
+    customSiteLabel: "Per-Site Customization",
+    customSiteHint: "Choose a specific emoji set for certain websites.",
+    domainPlaceholder: "example.com",
+    addRule: "Add Rule",
+    removeRule: "Remove",
+    clearShortcut: "Clear Shortcut"
   },
   ar: {
     title: "TrueMoji",
@@ -57,7 +74,24 @@ const TRANSLATIONS = {
     visitRepo: "زيارة المستودع",
     autoReloadLabel: "إعادة التحميل التلقائي",
     autoReloadHint: "إعادة تحميل الصفحات المفتوحة تلقائياً عند تغيير مجموعة الصور أو الإعدادات.",
-    loadMore: "عرض المزيد"
+    loadMore: "عرض المزيد",
+    emojiSizeLabel: "حجم الإيموجي",
+    emojiSizeHint: "تعديل حجم صور الإيموجي بالنسبة للنص.",
+    excludeListLabel: "المواقع المستثناة",
+    excludeListHint: "أدخل النطاقات التي تريد تعطيل TrueMoji فيها (نطاق واحد في كل سطر). مثال: docs.google.com",
+    excludePlaceholder: "example.com\ndocs.google.com",
+    excludeSite: "تعطيل في هذا الموقع",
+    showOriginalLabel: "إظهار الأصلي عند التحويم",
+    showOriginalHint: "عرض الإيموجي الأصلي عند تمرير مؤشر الفأرة فوق الصورة المستبدلة.",
+    shortcutLabel: "اختصار لوحة المفاتيح",
+    shortcutHint: "انقر داخل الحقل واضغط على مفاتيح الاختصار لتسجيلها لتبديل تفعيل الإضافة.",
+    shortcutPlaceholder: "انقر لتسجيل الاختصار",
+    customSiteLabel: "تخصيص لكل موقع",
+    customSiteHint: "اختر مجموعة إيموجي محددة لمواقع معينة.",
+    domainPlaceholder: "example.com",
+    addRule: "إضافة قاعدة",
+    removeRule: "حذف",
+    clearShortcut: "مسح الاختصار"
   }
 };
 
@@ -72,6 +106,18 @@ function applyLanguage(lang) {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     if (t[key]) el.textContent = t[key];
+  });
+
+  // Apply title attribute by data-i18n-title attribute
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.dataset.i18nTitle;
+    if (t[key]) el.title = t[key];
+  });
+
+  // Apply placeholder attribute by data-i18n-placeholder attribute
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (t[key]) el.placeholder = t[key];
   });
 
   // Update status text dynamically if needed

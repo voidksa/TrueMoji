@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "TrueMoji",
-    "version": "1.0.0",
-    "description": "Render emoji on the web with iPhone-style images.",
+    "version": "1.1.0",
+    "description": "Replace native emojis with Apple, Google, Twitter, Facebook, and other styles on any website.",
     "icons": {
         "16": "icon.png",
         "32": "icon.png",

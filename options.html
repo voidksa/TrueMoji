@@ -33,7 +33,7 @@
       color: var(--fg)
     }
 
-    :lang(ar) {
+    html[lang="ar"] body {
       font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
     }
 
@@ -202,6 +202,13 @@
       gap: 8px
     }
 
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit
+    }
+
     button {
       padding: 8px 12px;
       font-size: 14px;
@@ -261,6 +268,24 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    textarea:focus {
+      outline: 2px solid var(--accent);
+      border-color: transparent;
+    }
   </style>
 </head>
 
@@ -304,7 +329,8 @@
         </div>
       </div>
       <div class="row">
-        <div class="label" data-i18n="strictLabel">Strict set only</div>
+        <div class="label"><span data-i18n="strictLabel">Strict set only</span> <span class="status"
+            id="strictStatus"></span></div>
         <label class="switch">
           <input type="checkbox" id="strict">
           <span class="slider"></span>
@@ -313,8 +339,72 @@
       <div class="hint" data-i18n="strictHint">When enabled, TrueMoji uses only the selected image set. If an emoji is
         missing in that set, it
         remains as native text. Disable to allow fallback to other sets when an image is unavailable.</div>
+
       <div class="row">
-        <div class="label" data-i18n="autoReloadLabel">Auto reload pages</div>
+        <div class="label" data-i18n="emojiSizeLabel">Emoji Size</div>
+        <div class="range-wrap">
+          <input type="range" id="emojiSize" min="1.0" max="1.5" step="0.05" value="1.0">
+          <span id="emojiSizeValue">1.0x</span>
+        </div>
+      </div>
+      <div class="hint" data-i18n="emojiSizeHint">Adjust the size of the emoji images relative to the text.</div>
+
+      <div class="row" style="display: block;">
+        <div class="label" data-i18n="excludeListLabel" style="margin-bottom: 8px;">Excluded Domains</div>
+        <textarea id="excludeList" placeholder="example.com" data-i18n-placeholder="excludePlaceholder"></textarea>
+      </div>
+      <div class="hint" data-i18n="excludeListHint">Enter domains where TrueMoji should be disabled (one per line).
+        Example: docs.google.com</div>
+
+      <div class="row">
+        <div class="label" data-i18n="showOriginalLabel">Show original on hover</div>
+        <label class="switch">
+          <input type="checkbox" id="showOriginal">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="hint" data-i18n="showOriginalHint">Show the original native emoji when you hover over the replaced
+        image.</div>
+
+      <div class="row" style="display: block;">
+        <div class="label" data-i18n="shortcutLabel" style="margin-bottom: 8px;">Keyboard Shortcut</div>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="shortcutInput" placeholder="Click to record shortcut" readonly
+            style="flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); box-sizing: border-box;"
+            data-i18n-placeholder="shortcutPlaceholder">
+          <button id="clearShortcutBtn"
+            style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--fg); cursor: pointer;"
+            title="Clear Shortcut" data-i18n-title="clearShortcut">✕</button>
+        </div>
+      </div>
+      <div class="hint" data-i18n="shortcutHint">Click the input and press your desired key combination to toggle
+        TrueMoji.</div>
+
+      <div class="row" style="display: block;">
+        <div class="label" data-i18n="customSiteLabel" style="margin-bottom: 8px;">Per-Site Customization</div>
+        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+          <input type="text" id="customDomainInput" placeholder="example.com"
+            style="flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg);"
+            data-i18n-placeholder="domainPlaceholder">
+          <select id="customSetSelect"
+            style="padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--fg);">
+            <option value="apple">Apple</option>
+            <option value="google">Google</option>
+            <option value="fluent-color">Fluent</option>
+            <option value="twitter">Twitter</option>
+            <option value="facebook">Facebook</option>
+            <option value="facebook-old">FB (Old)</option>
+            <option value="openmoji">OpenMoji</option>
+          </select>
+          <button id="addRuleBtn" data-i18n="addRule">Add Rule</button>
+        </div>
+        <div id="customRulesList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+      <div class="hint" data-i18n="customSiteHint">Choose a specific emoji set for certain websites.</div>
+
+      <div class="row">
+        <div class="label"><span data-i18n="autoReloadLabel">Auto reload pages</span> <span class="status"
+            id="autoReloadStatus"></span></div>
         <label class="switch">
           <input type="checkbox" id="autoReload">
           <span class="slider"></span>

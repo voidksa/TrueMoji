@@ -16,10 +16,15 @@ TrueMoji replaces native system emojis with beautiful, high-quality image sets l
 
 ## Features
 - **Multiple Emoji Sets**: Choose between Apple, Google, Twitter, Facebook, OpenMoji, and Fluent Design.
+- **Per-Site Customization**: Assign different emoji sets to specific websites (e.g., Twitter emojis on Twitter, Apple emojis elsewhere).
+- **Excluded Domains**: Disable TrueMoji completely on specific websites.
+- **Keyboard Shortcut**: Toggle the extension on/off instantly with a customizable shortcut.
+- **Show Original on Hover**: Hover over any emoji to see the original native character.
+- **Emoji Size Control**: Adjust the size of emojis from 1.0x to 1.5x.
 - **Strict Mode**: Force use of selected set only.
 - **Auto Reload**: Automatically refresh pages when settings change.
 - **Bilingual**: Fully localized in English and Arabic.
-- **Preview**: Test emoji rendering directly in the options page.
+- **Dark Mode**: Settings interface adapts to your system theme.
 
 ## Screenshots
 

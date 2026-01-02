@@ -14,11 +14,37 @@ const TEXT_SYM = '(?:\\u00A9\\uFE0F?|\\u00AE\\uFE0F?)'
 const EMOJI_PATTERN = new RegExp(`(${EMOJI_SEQ}|${KEYCAP}|${FLAGS}|${TAG_FLAGS}|${TEXT_SYM})`, 'gu')
 const SKIN_MOD_ONLY = /^[\u{1F3FB}-\u{1F3FF}]$/u
 
-let cfg = { enabled: DEFAULT_ENABLED, set: DEFAULT_SET, strict: false, autoReload: false }
+let cfg = {
+  enabled: DEFAULT_ENABLED,
+  set: DEFAULT_SET,
+  strict: false,
+  autoReload: false,
+  emojiSize: 1.0,
+  excludedDomains: '',
+  showOriginal: false,
+  shortcutKey: '',
+  customSiteSets: []
+}
 let mapUnified = new Map()
 let mapNonQualified = new Map()
 let mapEntry = new Map()
 let ready = false
+
+function getCurrentSet() {
+  if (cfg.customSiteSets && Array.isArray(cfg.customSiteSets)) {
+    const domain = window.location.hostname
+    const rule = cfg.customSiteSets.find(r => domain.includes(r.domain))
+    if (rule) return rule.set
+  }
+  return cfg.set
+}
+
+function isExcluded() {
+  if (!cfg.excludedDomains) return false
+  const domain = window.location.hostname
+  const lines = cfg.excludedDomains.split('\n').map(s => s.trim()).filter(Boolean)
+  return lines.some(l => domain.includes(l))
+}
 
 function hex(cp) {
   const s = cp.toString(16).toUpperCase()
@@ -114,7 +140,8 @@ function replaceTextNode(node) {
     const i = m.index
     if (i > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, i)))
     const token = m[0]
-    if (cfg.set === 'fluent-color') {
+    const currentSet = getCurrentSet()
+    if (currentSet === 'fluent-color') {
       if (!SKIN_MOD_ONLY.test(token)) {
         ensureFluentFontInjected()
         const sp = document.createElement('span')
@@ -123,6 +150,7 @@ function replaceTextNode(node) {
         sp.style.setProperty('font-size', '1em', 'important')
         sp.style.setProperty('line-height', '1em', 'important')
         sp.style.verticalAlign = '-0.1em'
+        if (cfg.showOriginal) sp.title = token
         frag.appendChild(sp)
       }
       lastIndex = i + token.length
@@ -151,7 +179,8 @@ function replaceTextNode(node) {
     if (image) {
       const img = document.createElement('img')
       const sets = ['apple', 'google', 'openmoji', 'twitter', 'facebook']
-      let candidates = cfg.strict ? [cfg.set] : [cfg.set, ...sets.filter(s => s !== cfg.set)]
+      const currentSet = getCurrentSet()
+      let candidates = cfg.strict ? [currentSet] : [currentSet, ...sets.filter(s => s !== currentSet)]
       if (entry) {
         candidates = candidates.filter(s => s === 'openmoji' || s === 'facebook-old' || entry.avail[s])
       }
@@ -171,13 +200,15 @@ function replaceTextNode(node) {
       }
       img.onerror = () => applySrc()
       applySrc()
+      const size = (cfg.emojiSize || 1.0) + 'em'
       img.alt = token
+      if (cfg.showOriginal) img.title = token
       img.decoding = 'async'
       img.loading = 'lazy'
-      img.style.setProperty('height', '1em', 'important')
+      img.style.setProperty('height', size, 'important')
       img.style.setProperty('width', 'auto', 'important')
       img.style.setProperty('min-width', 'auto', 'important')
-      img.style.setProperty('min-height', '1em', 'important')
+      img.style.setProperty('min-height', size, 'important')
       img.style.setProperty('vertical-align', '-0.1em', 'important')
       img.style.setProperty('margin', '0 0.1em', 'important')
       img.style.setProperty('padding', '0', 'important')
@@ -226,7 +257,7 @@ function walkAndReplace(root) {
   while ((n = it.nextNode())) replaceTextNode(n)
 
   if (root.querySelectorAll) {
-    const images = root.querySelectorAll('img[src*="emoji.php"]')
+    const images = root.querySelectorAll('img[src*="emoji.php"], img[src*="twimg.com/emoji"]')
     for (const img of images) {
       if (!shouldSkip(img)) replaceImageNode(img)
     }
@@ -261,7 +292,8 @@ function replaceImageNode(img) {
 
   if (image) {
     const sets = ['apple', 'google', 'openmoji', 'twitter', 'facebook']
-    let candidates = cfg.strict ? [cfg.set] : [cfg.set, ...sets.filter(s => s !== cfg.set)]
+    const currentSet = getCurrentSet()
+    let candidates = cfg.strict ? [currentSet] : [currentSet, ...sets.filter(s => s !== currentSet)]
     if (entry) candidates = candidates.filter(s => s === 'openmoji' || s === 'facebook-old' || entry.avail[s])
 
     if (candidates.length) {
@@ -270,11 +302,13 @@ function replaceImageNode(img) {
       if (img.src !== newSrc) {
         img.src = newSrc
         img.setAttribute('data-truemoji-set', set)
+        if (cfg.showOriginal) img.title = alt
         img.removeAttribute('srcset')
-        img.style.setProperty('height', '1em', 'important')
+        const size = (cfg.emojiSize || 1.0) + 'em'
+        img.style.setProperty('height', size, 'important')
         img.style.setProperty('width', 'auto', 'important')
         img.style.setProperty('min-width', 'auto', 'important')
-        img.style.setProperty('min-height', '1em', 'important')
+        img.style.setProperty('min-height', size, 'important')
         img.style.setProperty('vertical-align', '-0.1em', 'important')
         img.style.setProperty('margin', '0 0.1em', 'important')
         img.style.setProperty('padding', '0', 'important')
@@ -325,6 +359,7 @@ function observe() {
 
 function initWithConfig() {
   if (!cfg.enabled) return
+  if (isExcluded()) return
   if (!ready) {
     loadData().then(() => {
       walkAndReplace(document.body || document.documentElement)
@@ -338,9 +373,39 @@ function initWithConfig() {
   }
 }
 
-chrome.storage.sync.get({ enabled: DEFAULT_ENABLED, set: DEFAULT_SET, strict: false, autoReload: false }, v => {
+chrome.storage.sync.get({
+  enabled: DEFAULT_ENABLED,
+  set: DEFAULT_SET,
+  strict: false,
+  autoReload: false,
+  emojiSize: 1.0,
+  excludedDomains: '',
+  showOriginal: false,
+  shortcutKey: '',
+  customSiteSets: []
+}, v => {
   cfg = v
   initWithConfig()
+})
+
+window.addEventListener('keydown', (e) => {
+  if (!cfg.shortcutKey) return
+  if (['Control', 'Alt', 'Shift', 'Meta'].includes(e.key)) return
+
+  const parts = []
+  if (e.ctrlKey) parts.push('Ctrl')
+  if (e.altKey) parts.push('Alt')
+  if (e.shiftKey) parts.push('Shift')
+  if (e.metaKey) parts.push('Meta')
+
+  parts.push(e.key.length === 1 ? e.key.toUpperCase() : e.key)
+  const pressed = parts.join('+')
+
+  if (pressed === cfg.shortcutKey) {
+    e.preventDefault()
+    const newEnabled = !cfg.enabled
+    chrome.storage.sync.set({ enabled: newEnabled })
+  }
 })
 
 chrome.storage.onChanged.addListener(changes => {
@@ -357,14 +422,33 @@ chrome.storage.onChanged.addListener(changes => {
     cfg.strict = changes.strict.newValue
     changed = true
   }
+  if (changes.emojiSize) {
+    cfg.emojiSize = changes.emojiSize.newValue
+    changed = true
+  }
+  if (changes.excludedDomains) {
+    cfg.excludedDomains = changes.excludedDomains.newValue
+    if (isExcluded() && cfg.autoReload) location.reload()
+  }
   if (changes.autoReload) {
     cfg.autoReload = changes.autoReload.newValue
-    // No reload needed for this setting change itself
   }
+  if (changes.showOriginal) {
+    cfg.showOriginal = changes.showOriginal.newValue
+    changed = true
+  }
+  if (changes.shortcutKey) {
+    cfg.shortcutKey = changes.shortcutKey.newValue
+  }
+  if (changes.customSiteSets) {
+    cfg.customSiteSets = changes.customSiteSets.newValue
+    changed = true
+  }
+
   if (changed && cfg.autoReload) location.reload()
 })
 
-let overlayMap = new WeakMap()
+let overlayMap = new Map()
 
 function fragmentForPlainText(text) {
   EMOJI_PATTERN.lastIndex = 0
@@ -375,7 +459,8 @@ function fragmentForPlainText(text) {
     const i = m.index
     if (i > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, i)))
     const token = m[0]
-    if (cfg.set === 'fluent-color') {
+    const currentSet = getCurrentSet()
+    if (currentSet === 'fluent-color') {
       if (!SKIN_MOD_ONLY.test(token)) {
         ensureFluentFontInjected()
         const sp = document.createElement('span')
@@ -384,6 +469,7 @@ function fragmentForPlainText(text) {
         sp.style.fontSize = '1em'
         sp.style.lineHeight = '1em'
         sp.style.verticalAlign = '-0.1em'
+        if (cfg.showOriginal) sp.title = token
         frag.appendChild(sp)
       }
       lastIndex = i + token.length
@@ -412,7 +498,8 @@ function fragmentForPlainText(text) {
     if (image) {
       const img = document.createElement('img')
       const sets = ['apple', 'google', 'openmoji', 'twitter', 'facebook']
-      let candidates = cfg.strict ? [cfg.set] : [cfg.set, ...sets.filter(s => s !== cfg.set)]
+      const currentSet = getCurrentSet()
+      let candidates = cfg.strict ? [currentSet] : [currentSet, ...sets.filter(s => s !== currentSet)]
       if (entry) {
         candidates = candidates.filter(s => s === 'openmoji' || entry.avail[s])
       }
@@ -433,6 +520,7 @@ function fragmentForPlainText(text) {
       img.onerror = () => applySrc()
       applySrc()
       img.alt = token
+      if (cfg.showOriginal) img.title = token
       img.decoding = 'async'
       img.loading = 'lazy'
       img.style.setProperty('height', '1em', 'important')
@@ -470,10 +558,33 @@ function syncOverlayStyle(el, ov) {
   ov.style.whiteSpace = el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'pre'
   ov.style.padding = cs.padding
   ov.style.borderRadius = cs.borderRadius
+  ov.style.borderWidth = cs.borderWidth
+  ov.style.borderStyle = cs.borderStyle
+  ov.style.borderColor = 'transparent'
+  ov.style.boxSizing = cs.boxSizing
+  ov.style.textIndent = cs.textIndent
+  ov.style.wordSpacing = cs.wordSpacing
+  ov.style.textTransform = cs.textTransform
+
+  // Fix: Match scrollbar width to prevent text reflow mismatch
+  const sbW = el.offsetWidth - el.clientWidth - parseFloat(cs.borderLeftWidth || 0) - parseFloat(cs.borderRightWidth || 0)
+  if (sbW > 0) {
+    const pr = parseFloat(cs.paddingRight || 0)
+    ov.style.paddingRight = (pr + sbW) + 'px'
+  }
 }
 
 function positionOverlay(el, ov) {
+  if (el.offsetParent === null) {
+    ov.style.display = 'none'
+    return
+  }
   const r = el.getBoundingClientRect()
+  if (r.width === 0 || r.height === 0) {
+    ov.style.display = 'none'
+    return
+  }
+  ov.style.display = 'block'
   ov.style.position = 'fixed'
   ov.style.left = r.left + 'px'
   ov.style.top = r.top + 'px'
@@ -507,6 +618,26 @@ function ensureOverlay(el) {
   el.addEventListener('input', () => renderOverlay(el))
   el.addEventListener('change', () => renderOverlay(el))
   el.addEventListener('scroll', () => renderOverlay(el))
+
+  const ro = new ResizeObserver(() => {
+    syncOverlayStyle(el, ov)
+    positionOverlay(el, ov)
+  })
+  ro.observe(el)
+
+  let rafId
+  const loop = () => {
+    positionOverlay(el, ov)
+    if (el.tagName === 'TEXTAREA' && ov.scrollTop !== el.scrollTop) {
+      ov.scrollTop = el.scrollTop
+    }
+    rafId = requestAnimationFrame(loop)
+  }
+  el.addEventListener('focus', () => loop())
+  el.addEventListener('blur', () => {
+    cancelAnimationFrame(rafId)
+    positionOverlay(el, ov)
+  })
 }
 
 function setupFieldOverlays() {
@@ -524,7 +655,7 @@ function setupFieldOverlays() {
   for (const el of list) ensureOverlay(el)
   window.addEventListener('scroll', () => {
     for (const [el, ov] of overlayMap) positionOverlay(el, ov)
-  })
+  }, { capture: true, passive: true })
   window.addEventListener('resize', () => {
     for (const [el, ov] of overlayMap) {
       syncOverlayStyle(el, ov)

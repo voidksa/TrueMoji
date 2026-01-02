@@ -5,6 +5,9 @@ const enabledEl = document.getElementById('enabled')
 const segEl = document.getElementById('setSeg')
 const enabledStatusEl = document.getElementById('enabledStatus')
 const setStatusEl = document.getElementById('setStatus')
+const excludeSiteEl = document.getElementById('excludeSite')
+const excludeSiteRow = document.getElementById('excludeSiteRow')
+const excludeSiteStatusEl = document.getElementById('excludeSiteStatus')
 const openOptionsEl = document.getElementById('openOptions')
 const langToggleEl = document.getElementById('langToggle')
 const checkUpdateBtn = document.getElementById('checkUpdateBtn')
@@ -40,11 +43,22 @@ function updateSetStatus(selected) {
   setStatusEl.textContent = setName
 }
 
+function updateExcludeSiteStatus() {
+  const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
+  if (excludeSiteStatusEl && excludeSiteEl) {
+    // When checked, it means "Disabled on this site", so status is On (feature is active)
+    // Or users might interpret it as "Site is Excluded: Yes/No"
+    // Let's stick to On/Off for the toggle state itself.
+    // If toggle is ON -> Exclude is ON -> "On"
+    excludeSiteStatusEl.textContent = excludeSiteEl.checked ? t.statusOn : t.statusOff
+  }
+}
+
 function updateLangToggle() {
   langToggleEl.textContent = currentLang === 'en' ? 'AR' : 'EN'
 }
 
-chrome.storage.sync.get({ enabled: DEFAULT_ENABLED, set: DEFAULT_SET, lang: DEFAULT_LANG_KEY }, v => {
+chrome.storage.sync.get({ enabled: DEFAULT_ENABLED, set: DEFAULT_SET, lang: DEFAULT_LANG_KEY, excludedDomains: '' }, v => {
   currentLang = v.lang || DEFAULT_LANG_KEY
   applyLanguage(currentLang)
   updateLangToggle()
@@ -56,6 +70,45 @@ chrome.storage.sync.get({ enabled: DEFAULT_ENABLED, set: DEFAULT_SET, lang: DEFA
     b.classList.toggle('selected', b.dataset.set === current)
   }
   updateSetStatus(current)
+
+  // Quick Exclude Logic
+  if (excludeSiteRow && excludeSiteEl) {
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      if (!tabs || !tabs.length) return
+      const urlStr = tabs[0].url
+      if (!urlStr || !urlStr.startsWith('http')) return
+
+      try {
+        const url = new URL(urlStr)
+        const hostname = url.hostname
+
+        excludeSiteRow.style.display = 'flex'
+
+        const list = (v.excludedDomains || '').split('\n').map(x => x.trim()).filter(x => x)
+        excludeSiteEl.checked = list.includes(hostname)
+        updateExcludeSiteStatus()
+
+        excludeSiteEl.addEventListener('change', () => {
+          updateExcludeSiteStatus()
+          chrome.storage.sync.get({ excludedDomains: '' }, current => {
+            let currentList = (current.excludedDomains || '').split('\n').map(x => x.trim()).filter(x => x)
+            if (excludeSiteEl.checked) {
+              if (!currentList.includes(hostname)) currentList.push(hostname)
+            } else {
+              currentList = currentList.filter(x => x !== hostname)
+            }
+            chrome.storage.sync.set({ excludedDomains: currentList.join('\n') }, () => {
+              // Optional: Reload tab to apply changes immediately?
+              // For now, let's just save. The user might need to reload manually or we can trigger it.
+              // Given the user instructions, maybe simple save is enough.
+            })
+          })
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    })
+  }
 })
 
 // Clear update badge when popup is opened
@@ -73,6 +126,7 @@ langToggleEl.addEventListener('click', () => {
   updateLangToggle()
   updateEnabledStatus()
   updateSetStatus()
+  updateExcludeSiteStatus()
 })
 
 segEl.addEventListener('click', e => {
@@ -93,6 +147,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
       updateLangToggle()
       updateEnabledStatus()
       updateSetStatus()
+      updateExcludeSiteStatus()
     }
     if (changes.enabled) {
       enabledEl.checked = changes.enabled.newValue
@@ -147,5 +202,43 @@ checkUpdateBtn.addEventListener('click', () => {
         checkUpdateBtn.dataset.updateAvailable = 'false'
       }, 2000)
     }
+  })
+})
+
+// Exclude site logic
+chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+  const tab = tabs[0]
+  if (!tab || !tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('edge://')) return
+
+  let domain
+  try {
+    const url = new URL(tab.url)
+    if (!url.protocol.startsWith('http')) return
+    domain = url.hostname.replace(/^www\./, '')
+  } catch (e) {
+    return
+  }
+
+  const row = document.getElementById('excludeSiteRow')
+  const cb = document.getElementById('excludeSite')
+  if (!row || !cb) return
+
+  row.style.display = 'flex'
+
+  chrome.storage.sync.get({ excludedDomains: '' }, v => {
+    const lines = v.excludedDomains.split('\n').map(s => s.trim()).filter(Boolean)
+    cb.checked = lines.includes(domain)
+
+    cb.addEventListener('change', () => {
+      chrome.storage.sync.get({ excludedDomains: '' }, current => {
+        let curLines = current.excludedDomains.split('\n').map(s => s.trim()).filter(Boolean)
+        if (cb.checked) {
+          if (!curLines.includes(domain)) curLines.push(domain)
+        } else {
+          curLines = curLines.filter(l => l !== domain)
+        }
+        chrome.storage.sync.set({ excludedDomains: curLines.join('\n') })
+      })
+    })
   })
 })
