@@ -12,7 +12,7 @@
 ## شاهد الفرق
 | قبل (النظام الافتراضي) | بعد (TrueMoji - نمط Apple) |
 |:---------------------:|:--------------------------:|
-| ![قبل](screenshots/flags-before.png) | ![بعد](screenshots/flags-after.png) |
+| <img src="screenshots/flags-before.png" width="300" /> | <img src="screenshots/flags-after.png" width="300" /> |
 
 ## المميزات
 - **مجموعات إيموجي متعددة**: اختر بين Apple و Google و Twitter و Facebook و OpenMoji و Fluent Design.
