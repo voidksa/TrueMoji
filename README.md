@@ -5,6 +5,10 @@
   [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
 </div>
 
+<div align="center">
+  <a href="README_ar.md">🇸🇦 العربية</a>
+</div>
+
 Tired of boring default browser emojis? Or seeing empty squares where flags should be? **TrueMoji is the solution.**
 
 TrueMoji replaces native system emojis with beautiful, high-quality image sets like Apple (iOS), Google, Twitter, and more. Enjoy a consistent, vibrant, and fully expressive emoji experience on every website you visit.

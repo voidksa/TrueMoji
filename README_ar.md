@@ -5,6 +5,10 @@
   [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
 </div>
 
+<div align="center">
+  <a href="README.md">🇺🇸 English</a>
+</div>
+
 مللت من إيموجيات المتصفح التقليدية؟ أو تعاني من عدم ظهور بعض الرموز مثل الأعلام؟ **TrueMoji هو الحل.**
 
 تقوم هذه الأداة باستبدال إيموجيات النظام المملة بمجموعات صور عالية الجودة مثل إيموجيات الآيفون (Apple)، جوجل، تويتر وغيرها. استمتع بتجربة إيموجي كاملة وجميلة في كل المواقع التي تتصفحها.
