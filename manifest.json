@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "TrueMoji",
     "version": "1.1.0",
-    "description": "Replace native emojis with Apple, Google, Twitter, Facebook, and other styles on any website.",
+    "description": "Replace browser emojis with high-quality image emojis and multiple visual styles.",
     "icons": {
         "16": "icon.png",
         "32": "icon.png",
