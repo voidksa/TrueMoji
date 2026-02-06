@@ -4,7 +4,7 @@
 
   [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
   
-  ![Firefox Coming Soon](https://img.shields.io/badge/Firefox-Coming_Soon-orange?style=for-the-badge&logo=firefox-browser)
+  [![Add to Firefox](https://img.shields.io/badge/Add_to_Firefox-Available_Now-orange?style=for-the-badge&logo=firefox-browser)](https://addons.mozilla.org/en-US/firefox/addon/truemoji/)
 </div>
 
 <div align="center">
