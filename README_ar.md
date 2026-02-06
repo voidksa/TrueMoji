@@ -36,10 +36,14 @@
 ## لقطات الشاشة
 
 ### الإعدادات السريعة (الواجهة)
-![الإعدادات السريعة](screenshots/app_ar.png)
+<div align="right">
+  <img src="screenshots/app_ar.png" alt="الإعدادات السريعة" />
+</div>
 
 ### صفحة الإعدادات
-![صفحة الإعدادات](screenshots/Options_ar.png)
+<div align="right">
+  <img src="screenshots/Options_ar.png" alt="صفحة الإعدادات" />
+</div>
 
 ## الدعم والمساعدة
 إذا واجهت أي مشاكل أو لديك اقتراحات، يرجى فتح تذكرة على GitHub:
