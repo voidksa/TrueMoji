@@ -50,15 +50,6 @@ function hex(cp) {
   const s = cp.toString(16).toUpperCase()
   return s.length < 4 ? s.padStart(4, '0') : s
 }
-let fluentCssInjected = false
-function ensureFluentFontInjected() {
-  if (fluentCssInjected) return
-  const link = document.createElement('link')
-  link.rel = 'stylesheet'
-  link.href = 'https://tetunori.github.io/fluent-emoji-webfont/dist/FluentEmojiColor.css'
-  document.documentElement.appendChild(link)
-  fluentCssInjected = true
-}
 
 function unifiedFromEmoji(s) {
   const cps = []
@@ -79,6 +70,14 @@ function guessImageName(unified) {
 }
 
 function urlFor(set, image, unified) {
+  if (set === 'system') return null;
+  const cleanUni = unified.replace(/-FE0F/gi, '');
+  if (set === 'fluent-color') {
+    return `https://cdn.jsdelivr.net/gh/bignutty/fluent-emoji@latest/static/${cleanUni.toLowerCase()}.png`
+  }
+  if (set === 'joypixels') {
+    return `https://cdn.jsdelivr.net/emojione/assets/png/${cleanUni.toUpperCase()}.png`
+  }
   if (set === 'openmoji') {
     if ((unified.includes('20E3') || unified.includes('200D')) && unified.indexOf('-') !== -1) {
       return `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/svg/${unified}.svg`
@@ -86,46 +85,70 @@ function urlFor(set, image, unified) {
     const cleaned = unified.replace(/-FE0F/g, '').toUpperCase()
     return `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/svg/${cleaned}.svg`
   }
-  if (set === 'facebook-old') {
-    return `https://cdn.jsdelivr.net/npm/emoji-datasource-facebook@4.0.0/img/facebook/64/${image}`
-  }
   return SET_BASE(set) + image + '?v=16'
 }
-function loadData() {
-  return fetch(DATA_URL)
-    .then(r => r.json())
-    .then(arr => {
-      console.log('TrueMoji: emoji dataset loaded', Array.isArray(arr) ? arr.length : 0)
-      for (const e of arr) {
-        const avail = {
-          apple: !!e.has_img_apple,
-          google: !!e.has_img_google,
-          twitter: !!e.has_img_twitter,
-          facebook: !!e.has_img_facebook
-        }
-        if (e.unified) {
-          mapUnified.set(e.unified, e.image)
-          mapEntry.set(e.unified, { image: e.image, avail, unified: e.unified })
-        }
-        if (e.non_qualified) {
-          mapNonQualified.set(e.non_qualified, e.image)
-          mapEntry.set(e.non_qualified, { image: e.image, avail, unified: e.unified })
-        }
-        if (e.skin_variations) {
-          for (const k in e.skin_variations) {
-            const v = e.skin_variations[k]
-            if (v.unified && v.image) {
-              mapUnified.set(v.unified, v.image)
-              mapEntry.set(v.unified, { image: v.image, avail, unified: v.unified })
-            }
-          }
+
+const CACHE_KEY = 'truemoji_data'
+const CACHE_TTL = 7 * 24 * 60 * 60 * 1000 // 7 days
+
+function processData(arr) {
+  console.log('TrueMoji: emoji dataset loaded', Array.isArray(arr) ? arr.length : 0)
+  for (const e of arr) {
+    const avail = {
+      apple: !!e.has_img_apple,
+      google: !!e.has_img_google,
+      twitter: !!e.has_img_twitter,
+      facebook: !!e.has_img_facebook,
+      messenger: !!e.has_img_messenger,
+      // Assume new sets are available for all emojis unless specified otherwise
+      'fluent-color': true,
+      'joypixels': true,
+      'noto-color': true,
+      'samsung': true
+    }
+    if (e.unified) {
+      mapUnified.set(e.unified, e.image)
+      mapEntry.set(e.unified, { image: e.image, avail, unified: e.unified })
+    }
+    if (e.non_qualified) {
+      mapNonQualified.set(e.non_qualified, e.image)
+      mapEntry.set(e.non_qualified, { image: e.image, avail, unified: e.unified })
+    }
+    if (e.skin_variations) {
+      for (const k in e.skin_variations) {
+        const v = e.skin_variations[k]
+        if (v.unified && v.image) {
+          mapUnified.set(v.unified, v.image)
+          mapEntry.set(v.unified, { image: v.image, avail, unified: v.unified })
         }
       }
-      ready = true
+    }
+  }
+  ready = true
+}
+
+function loadData() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get([CACHE_KEY, 'truemoji_data_ts'], (res) => {
+      const now = Date.now()
+      if (res[CACHE_KEY] && res.truemoji_data_ts && (now - res.truemoji_data_ts < CACHE_TTL)) {
+        processData(res[CACHE_KEY])
+        resolve()
+      } else {
+        fetch(DATA_URL)
+          .then(r => r.json())
+          .then(arr => {
+            chrome.storage.local.set({ [CACHE_KEY]: arr, truemoji_data_ts: now })
+            processData(arr)
+            resolve()
+          })
+          .catch(err => {
+            console.warn('TrueMoji: failed to load emoji dataset', err)
+            reject(err)
+          })
+      }
     })
-    .catch(err => {
-      console.warn('TrueMoji: failed to load emoji dataset', err)
-    })
+  })
 }
 
 function replaceTextNode(node) {
@@ -141,21 +164,7 @@ function replaceTextNode(node) {
     if (i > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, i)))
     const token = m[0]
     const currentSet = getCurrentSet()
-    if (currentSet === 'fluent-color') {
-      if (!SKIN_MOD_ONLY.test(token)) {
-        ensureFluentFontInjected()
-        const sp = document.createElement('span')
-        sp.textContent = token
-        sp.style.fontFamily = 'Fluent Emoji Color'
-        sp.style.setProperty('font-size', '1em', 'important')
-        sp.style.setProperty('line-height', '1em', 'important')
-        sp.style.verticalAlign = '-0.1em'
-        if (cfg.showOriginal) sp.title = token
-        frag.appendChild(sp)
-      }
-      lastIndex = i + token.length
-      continue
-    }
+
     const uni = unifiedFromEmoji(token)
     const clean = uni.replace(/-FE0F/g, '')
     const withVs = uni.includes('-FE0F') ? uni : `${uni}-FE0F`
@@ -178,7 +187,7 @@ function replaceTextNode(node) {
     }
     if (image) {
       const img = document.createElement('img')
-      const sets = ['apple', 'google', 'openmoji', 'twitter', 'facebook']
+      const sets = ['apple', 'google', 'openmoji', 'twitter', 'facebook', 'messenger']
       const currentSet = getCurrentSet()
       let candidates = cfg.strict ? [currentSet] : [currentSet, ...sets.filter(s => s !== currentSet)]
       if (entry) {
@@ -236,6 +245,11 @@ function replaceTextNode(node) {
 function shouldSkip(node) {
   const p = node.parentElement
   if (!p) return true
+
+  // Check self or any parent for the skip attribute
+  if (node.closest && node.closest('[data-truemoji-skip]')) return true
+  if (p.closest('[data-truemoji-skip]')) return true
+
   const tn = p.tagName
   if (p.closest('[data-truemoji]')) return true
   if (tn === 'SCRIPT' || tn === 'STYLE' || tn === 'NOSCRIPT') return true
@@ -257,7 +271,9 @@ function walkAndReplace(root) {
   while ((n = it.nextNode())) replaceTextNode(n)
 
   if (root.querySelectorAll) {
-    const images = root.querySelectorAll('img[src*="emoji.php"], img[src*="twimg.com/emoji"]')
+    // Select all images that might be emojis based on alt text or class
+    // We check generic 'img' but filter efficiently in the loop
+    const images = root.querySelectorAll('img')
     for (const img of images) {
       if (!shouldSkip(img)) replaceImageNode(img)
     }
@@ -267,10 +283,34 @@ function walkAndReplace(root) {
 function replaceImageNode(img) {
   const alt = img.getAttribute('alt')
   if (!alt) return
+
+  // Strict check: alt must be exactly one emoji sequence
+  EMOJI_PATTERN.lastIndex = 0
+  const match = alt.match(EMOJI_PATTERN)
+  if (!match || match.length !== 1 || match[0] !== alt) return
+
   const uni = unifiedFromEmoji(alt)
   const clean = uni.replace(/-FE0F/g, '')
   const withVs = uni.includes('-FE0F') ? uni : `${uni}-FE0F`
   const cleanVs = clean.includes('-FE0F') ? clean : `${clean}-FE0F`
+
+  const currentSet = getCurrentSet()
+  if (currentSet === 'fluent-color') {
+    if (!SKIN_MOD_ONLY.test(alt)) {
+      ensureFluentFontInjected()
+      const sp = document.createElement('span')
+      sp.textContent = alt
+      sp.style.fontFamily = 'Fluent Emoji Color'
+      sp.style.setProperty('font-size', '1em', 'important')
+      sp.style.setProperty('line-height', '1em', 'important')
+      sp.style.verticalAlign = '-0.1em'
+      if (cfg.showOriginal) sp.title = alt
+      img.replaceWith(sp)
+    } else {
+      img.remove()
+    }
+    return
+  }
 
   const entry = mapEntry.get(uni) || mapEntry.get(clean)
   let image =
@@ -291,37 +331,92 @@ function replaceImageNode(img) {
   }
 
   if (image) {
-    const sets = ['apple', 'google', 'openmoji', 'twitter', 'facebook']
-    const currentSet = getCurrentSet()
+    const sets = ['apple', 'google', 'openmoji', 'twitter', 'facebook', 'messenger']
     let candidates = cfg.strict ? [currentSet] : [currentSet, ...sets.filter(s => s !== currentSet)]
-    if (entry) candidates = candidates.filter(s => s === 'openmoji' || s === 'facebook-old' || entry.avail[s])
-
-    if (candidates.length) {
-      const set = candidates[0]
-      const newSrc = urlFor(set, image, entry ? entry.unified : uni)
-      if (img.src !== newSrc) {
-        img.src = newSrc
-        img.setAttribute('data-truemoji-set', set)
-        if (cfg.showOriginal) img.title = alt
-        img.removeAttribute('srcset')
-        const size = (cfg.emojiSize || 1.0) + 'em'
-        img.style.setProperty('height', size, 'important')
-        img.style.setProperty('width', 'auto', 'important')
-        img.style.setProperty('min-width', 'auto', 'important')
-        img.style.setProperty('min-height', size, 'important')
-        img.style.setProperty('vertical-align', '-0.1em', 'important')
-        img.style.setProperty('margin', '0 0.1em', 'important')
-        img.style.setProperty('padding', '0', 'important')
-        img.style.setProperty('border', 'none', 'important')
-        img.style.setProperty('background', 'transparent', 'important')
-        img.style.setProperty('object-fit', 'contain', 'important')
-        img.style.setProperty('display', 'inline-block', 'important')
-        img.style.setProperty('transform', 'none', 'important')
-        img.style.setProperty('animation', 'none', 'important')
-        img.style.setProperty('box-shadow', 'none', 'important')
-        img.style.setProperty('border-radius', '0', 'important')
-      }
+    if (entry) {
+      candidates = candidates.filter(s => s === 'openmoji' || s === 'facebook-old' || entry.avail[s])
     }
+
+    let idx = 0
+    const newImg = document.createElement('img')
+
+    const fetchThroughBackground = (url) => {
+      return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({ action: 'fetch_image_blob', url: url }, response => {
+          if (chrome.runtime.lastError || !response || response.error) {
+            reject(response ? response.error : chrome.runtime.lastError)
+          } else {
+            resolve(response.dataUri)
+          }
+        })
+      })
+    }
+
+    const applySrc = () => {
+      if (idx >= candidates.length) {
+        if (!SKIN_MOD_ONLY.test(alt)) {
+          newImg.replaceWith(document.createTextNode(alt))
+        } else {
+          newImg.remove()
+        }
+        return
+      }
+      const set = candidates[idx++]
+      const url = urlFor(set, image, entry ? entry.unified : uni)
+
+      // Fetch via background script to bypass page CSP
+      fetchThroughBackground(url)
+        .then(dataUri => {
+          newImg.src = dataUri
+          newImg.setAttribute('data-truemoji-set', set)
+        })
+        .catch(() => {
+          // If background fetch fails, try direct load (fallback)
+          newImg.src = url
+          newImg.setAttribute('data-truemoji-set', set)
+        })
+    }
+
+    newImg.onerror = () => applySrc()
+
+    if (cfg.showOriginal) newImg.title = alt
+    newImg.decoding = 'async'
+    newImg.loading = 'lazy'
+    const size = (cfg.emojiSize || 1.0) + 'em'
+    newImg.style.setProperty('height', size, 'important')
+    newImg.style.setProperty('width', 'auto', 'important')
+    newImg.style.setProperty('min-width', 'auto', 'important')
+    newImg.style.setProperty('min-height', size, 'important')
+    newImg.style.setProperty('vertical-align', '-0.1em', 'important')
+    newImg.style.setProperty('margin', '0 0.1em', 'important')
+    newImg.style.setProperty('padding', '0', 'important')
+    newImg.style.setProperty('border', 'none', 'important')
+    newImg.style.setProperty('background', 'transparent', 'important')
+    newImg.style.setProperty('object-fit', 'contain', 'important')
+    newImg.style.setProperty('display', 'inline-block', 'important')
+    newImg.style.setProperty('transform', 'none', 'important')
+    newImg.style.setProperty('animation', 'none', 'important')
+    newImg.style.setProperty('box-shadow', 'none', 'important')
+    newImg.style.setProperty('border-radius', '0', 'important')
+
+    // Replace the original image with our new one
+    img.replaceWith(newImg)
+
+    // Start loading
+    applySrc()
+  }
+}
+
+function scanForInputs(root) {
+  if (!cfg.enabled) return
+  const sels = 'input[type="text"], input[type="search"], input[type="email"], input[type="url"], input[type="tel"], input:not([type]), textarea'
+
+  if (root.matches && root.matches(sels)) {
+    ensureOverlay(root)
+  }
+  if (root.querySelectorAll) {
+    const list = root.querySelectorAll(sels)
+    for (const el of list) ensureOverlay(el)
   }
 }
 
@@ -334,8 +429,10 @@ function observe() {
             if (!shouldSkip(n)) replaceTextNode(n)
           } else if (n.nodeType === Node.ELEMENT_NODE) {
             walkAndReplace(n)
+            scanForInputs(n)
             if (n.shadowRoot) {
               walkAndReplace(n.shadowRoot)
+              scanForInputs(n.shadowRoot)
               observeRoot(n.shadowRoot)
             }
           }
@@ -360,6 +457,7 @@ function observe() {
 function initWithConfig() {
   if (!cfg.enabled) return
   if (isExcluded()) return
+  if (cfg.set === 'system') return
   if (!ready) {
     loadData().then(() => {
       walkAndReplace(document.body || document.documentElement)
@@ -460,21 +558,7 @@ function fragmentForPlainText(text) {
     if (i > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, i)))
     const token = m[0]
     const currentSet = getCurrentSet()
-    if (currentSet === 'fluent-color') {
-      if (!SKIN_MOD_ONLY.test(token)) {
-        ensureFluentFontInjected()
-        const sp = document.createElement('span')
-        sp.textContent = token
-        sp.style.fontFamily = 'Fluent Emoji Color'
-        sp.style.fontSize = '1em'
-        sp.style.lineHeight = '1em'
-        sp.style.verticalAlign = '-0.1em'
-        if (cfg.showOriginal) sp.title = token
-        frag.appendChild(sp)
-      }
-      lastIndex = i + token.length
-      continue
-    }
+
     const uni = unifiedFromEmoji(token)
     const clean = uni.replace(/-FE0F/g, '')
     const withVs = uni.includes('-FE0F') ? uni : `${uni}-FE0F`
@@ -642,17 +726,8 @@ function ensureOverlay(el) {
 
 function setupFieldOverlays() {
   if (!cfg.enabled) return
-  const sels = [
-    'input[type="text"]',
-    'input[type="search"]',
-    'input[type="email"]',
-    'input[type="url"]',
-    'input[type="tel"]',
-    'input:not([type])',
-    'textarea'
-  ]
-  const list = document.querySelectorAll(sels.join(','))
-  for (const el of list) ensureOverlay(el)
+  scanForInputs(document)
+
   window.addEventListener('scroll', () => {
     for (const [el, ov] of overlayMap) positionOverlay(el, ov)
   }, { capture: true, passive: true })

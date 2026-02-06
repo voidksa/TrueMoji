@@ -1,6 +1,6 @@
 # Privacy Policy for TrueMoji
 
-**Last Updated:** December 31, 2024
+**Last Updated:** February 2026
 
 TrueMoji ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how our browser extension handles your data.
 

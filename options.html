@@ -12,7 +12,8 @@
       --fg: #111;
       --muted: #6b7280;
       --accent: #0a66c2;
-      --border: #e5e7eb
+      --border: #e5e7eb;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -23,126 +24,181 @@
         --muted: #9aa0a6;
         --accent: #4ea1ff;
         --border: #1f2937;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       }
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: system-ui, Segoe UI, Arial, sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       margin: 0;
       background: var(--bg);
-      color: var(--fg)
+      color: var(--fg);
+      line-height: 1.5;
     }
 
     html[lang="ar"] body {
-      font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+      font-family: 'Tajawal', system-ui, sans-serif;
+    }
+
+    html[lang="ar"] button {
+      font-family: 'Tajawal', system-ui, sans-serif;
     }
 
     .wrap {
-      max-width: 720px;
-      margin: 40px auto;
-      padding: 0 20px
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
     }
 
     header {
+      margin-bottom: 32px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px
+      gap: 16px;
     }
 
     header h1 {
-      font-size: 22px;
-      margin: 0
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: -0.5px;
     }
 
-    .lang-toggle {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      color: var(--accent);
-      padding: 6px 12px;
-      font-weight: 600;
-      background: var(--card);
-    }
-
-    header a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600
-    }
-
-    .gh {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--card)
-    }
-
-    .gh svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-      flex-shrink: 0;
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      align-items: start;
     }
 
     .card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent);
     }
 
     .row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
+      padding: 16px 0;
       border-top: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 12px;
+      gap: 20px;
     }
 
-    .row:first-child {
-      border-top: none
+    .row:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .label-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .label {
       font-weight: 600;
+      font-size: 15px;
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-shrink: 0;
     }
 
     .status {
       padding: 2px 8px;
       border: 1px solid var(--border);
       border-radius: 999px;
-      font-size: 12px;
-      color: var(--muted)
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
     }
 
-    select,
-    input[type=checkbox] {
-      font-size: 14px
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      max-width: 450px;
     }
 
+    /* Interactive Elements */
+    .lang-toggle,
+    .gh,
+    .btn-secondary,
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--fg);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .lang-toggle:hover,
+    .gh:hover,
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(78, 161, 255, 0.05);
+    }
+
+    .gh svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* Switch */
     .switch {
       position: relative;
-      display: inline-block;
-      width: 48px;
-      height: 28px
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
     }
 
     .switch input {
       opacity: 0;
       width: 0;
-      height: 0
+      height: 0;
     }
 
     .slider {
@@ -150,141 +206,108 @@
       inset: 0;
       background: var(--border);
       border-radius: 999px;
-      transition: background .2s
+      transition: 0.3s;
     }
 
     .slider::before {
       content: "";
       position: absolute;
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
       left: 3px;
       top: 3px;
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: #fff;
       border-radius: 50%;
-      transition: transform .2s, border-color .2s
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    .switch input:checked+.slider {
-      background: rgba(78, 161, 255, .5)
+    input:checked+.slider {
+      background: var(--accent);
     }
 
-    .switch input:checked+.slider::before {
+    input:checked+.slider::before {
       transform: translateX(20px);
-      border-color: var(--accent)
     }
 
     .seg {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
       gap: 8px;
-      flex-wrap: wrap
+      width: 100%;
     }
 
     .seg-btn {
-      padding: 8px 12px;
-      font-size: 14px;
-      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+      border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--card);
       color: var(--fg);
-      cursor: pointer
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 500;
+    }
+
+    .seg-btn:hover {
+      border-color: var(--accent);
     }
 
     .seg-btn.selected {
+      background: var(--accent);
+      color: #fff;
       border-color: var(--accent);
-      color: var(--accent)
+      font-weight: 600;
     }
 
-    .actions {
-      margin-top: 16px;
-      display: flex;
-      gap: 8px
-    }
-
-    button,
-    input,
-    select,
-    textarea {
-      font-family: inherit
-    }
-
-    button {
-      padding: 8px 12px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--fg);
-      cursor: pointer
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 8px;
-      margin-bottom: 8px
-    }
-
-    .preview {
-      margin-top: 12px;
-      font-size: 28px
-    }
-
-    .test-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
-      gap: 12px;
-      justify-items: center;
-    }
-
-    .test-grid .emoji {
-      font-size: 24px;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .load-more-container {
-      margin-top: 24px;
-      text-align: center;
-    }
-
-    .load-more-btn {
-      padding: 10px 24px;
-      font-size: 14px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--fg);
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .load-more-btn:hover {
-      background: rgba(78, 161, 255, .1);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    textarea {
+    /* Inputs */
+    input[type="text"],
+    textarea,
+    select {
       width: 100%;
-      min-height: 80px;
-      padding: 8px;
+      padding: 10px 14px;
+      border-radius: 10px;
       border: 1px solid var(--border);
-      border-radius: 8px;
       background: var(--bg);
       color: var(--fg);
-      font-family: inherit;
-      resize: vertical;
-      box-sizing: border-box;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
     }
 
+    input[type="text"]:focus,
     textarea:focus {
-      outline: 2px solid var(--accent);
-      border-color: transparent;
+      border-color: var(--accent);
+    }
+
+    /* Preview */
+    .preview-box {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border: 1px dashed var(--border);
+    }
+
+    .preview-text {
+      font-size: 32px;
+      margin-bottom: 16px;
+      min-height: 48px;
+    }
+
+    .side {
+      position: sticky;
+      top: 40px;
+    }
+
+    @media (max-width: 920px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+      }
     }
   </style>
 </head>
@@ -292,134 +315,254 @@
 <body>
   <div class="wrap">
     <header>
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <img src="icon.png" width="32" height="32" alt="TrueMoji Icon">
-        <h1 data-i18n="title">TrueMoji</h1>
-      </div>
-      <div style="display: flex; gap: 12px; align-items: center;">
-        <button class="lang-toggle" id="langToggle">AR</button>
-        <a class="gh" href="https://github.com/voidksa/TrueMoji" target="_blank">
-          <svg viewBox="0 0 16 16" aria-hidden="true">
-            <path
-              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-          </svg>
-          <span>GitHub</span>
-        </a>
-      </div>
+      <img src="icons/icon_48x48.png" width="40" height="40" alt="TrueMoji Icon">
+      <h1 data-i18n="title">TrueMoji</h1>
     </header>
-    <div class="card">
-      <div class="row">
-        <div class="label"><span data-i18n="enableLabel">Enable TrueMoji</span> <span class="status"
-            id="enabledStatus"></span></div>
-        <label class="switch">
-          <input type="checkbox" id="enabled">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="row">
-        <div class="label"><span data-i18n="setLabel">Image set</span> <span class="status" id="setStatus"></span></div>
-        <div class="seg" id="setSeg">
-          <button class="seg-btn" data-set="apple" data-i18n-set="apple">Apple</button>
-          <button class="seg-btn" data-set="google" data-i18n-set="google">Google</button>
-          <button class="seg-btn" data-set="fluent-color" data-i18n-set="fluent">Fluent (Color)</button>
-          <button class="seg-btn" data-set="twitter" data-i18n-set="twitter">Twitter</button>
-          <button class="seg-btn" data-set="facebook" data-i18n-set="facebook">Facebook</button>
-          <button class="seg-btn" data-set="facebook-old" data-i18n-set="facebookOld">FB (Old)</button>
-          <button class="seg-btn" data-set="openmoji" data-i18n-set="openmoji">OpenMoji</button>
+
+    <div class="layout">
+      <div class="main">
+        <!-- General Settings -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path
+                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+              </path>
+            </svg>
+            <span data-i18n="generalSettings">General Settings</span>
+          </div>
+
+          <div class="row">
+            <div class="label-group">
+              <div class="label"><span data-i18n="enableLabel">Enable TrueMoji</span> <span class="status"
+                  id="enabledStatus"></span></div>
+              <div class="hint">Toggle the emoji replacement globally.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="enabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="row">
+            <div class="label-group">
+              <div class="label" data-i18n="quickActions">Quick Actions</div>
+              <div class="hint" data-i18n="quickActionsHint">Change language or rate the extension.</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="lang-toggle" id="langToggle">AR</button>
+              <a class="gh"
+                href="https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg/reviews"
+                target="_blank">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z">
+                  </path>
+                </svg>
+                <span data-i18n="rateExtension">Rate Extension</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label-group">
+              <div class="label"><span data-i18n="autoReloadLabel">Auto reload pages</span> <span class="status"
+                  id="autoReloadStatus"></span></div>
+              <div class="hint" data-i18n="autoReloadHint">Automatically reload open pages when you change settings.
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="autoReload">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Emoji Style -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"></path>
+            </svg>
+            <span data-i18n="emojiStyle">Emoji Style</span>
+          </div>
+
+          <div class="row" style="flex-direction: column; align-items: flex-start;">
+            <div class="label-group" style="margin-bottom: 12px;">
+              <div class="label"><span data-i18n="setLabel">Image Set</span> <span class="status" id="setStatus"></span>
+              </div>
+              <div class="hint">Choose your preferred emoji design.</div>
+            </div>
+            <div class="seg" id="setSeg">
+              <button class="seg-btn" data-set="apple" data-i18n-set="apple">Apple</button>
+              <button class="seg-btn" data-set="google" data-i18n-set="google">Google</button>
+              <button class="seg-btn" data-set="fluent-color" data-i18n-set="fluent">Fluent (3D)</button>
+              <button class="seg-btn" data-set="twitter" data-i18n-set="twitter">Twitter</button>
+              <button class="seg-btn" data-set="facebook" data-i18n-set="facebook">Facebook</button>
+              <button class="seg-btn" data-set="joypixels" data-i18n-set="joypixels">JoyPixels</button>
+              <button class="seg-btn" data-set="openmoji" data-i18n-set="openmoji">OpenMoji</button>
+              <button class="seg-btn" data-set="system" data-i18n-set="system">System</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label-group">
+              <div class="label"><span data-i18n="strictLabel">Strict set only</span> <span class="status"
+                  id="strictStatus"></span></div>
+              <div class="hint" data-i18n="strictHint">When enabled, TrueMoji uses only the selected image set. Disable
+                to allow fallback.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="strict">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="row">
+            <div class="label-group">
+              <div class="label" data-i18n="emojiSizeLabel">Emoji Size</div>
+              <div class="hint" data-i18n="emojiSizeHint">Adjust the size of the emoji images relative to the text.
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <input type="range" id="emojiSize" min="1.0" max="1.5" step="0.05" value="1.0"
+                style="width: 120px; accent-color: var(--accent);">
+              <span id="emojiSizeValue" style="font-weight: 700; min-width: 40px;">1.0x</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span data-i18n="interactionSettings">Interaction & Shortcuts</span>
+          </div>
+
+          <div class="row">
+            <div class="label-group">
+              <div class="label" data-i18n="showOriginalLabel">Show original on hover</div>
+              <div class="hint" data-i18n="showOriginalHint">Show the original native emoji when you hover over the
+                replaced image.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="showOriginal">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="row" style="flex-direction: column; align-items: flex-start;">
+            <div class="label-group" style="margin-bottom: 12px;">
+              <div class="label" data-i18n="shortcutLabel">Keyboard Shortcut</div>
+              <div class="hint" data-i18n="shortcutHint">Click the input and press your desired key combination to
+                toggle TrueMoji.</div>
+            </div>
+            <div style="display: flex; gap: 8px; width: 100%;">
+              <input type="text" id="shortcutInput" placeholder="Click to record shortcut" readonly
+                data-i18n-placeholder="shortcutPlaceholder">
+              <button id="clearShortcutBtn" title="Clear Shortcut" data-i18n-title="clearShortcut" class="btn-secondary"
+                style="padding: 10px 16px; width: auto; margin-top: 0;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+            </svg>
+            <span data-i18n="websiteControl">Website Control</span>
+          </div>
+
+          <div class="row" style="flex-direction: column; align-items: flex-start;">
+            <div class="label-group" style="margin-bottom: 12px;">
+              <div class="label" data-i18n="excludeListLabel">Excluded Domains</div>
+              <div class="hint" data-i18n="excludeListHint">Enter domains where TrueMoji should be disabled (one per
+                line).</div>
+            </div>
+            <textarea id="excludeList" placeholder="example.com" data-i18n-placeholder="excludePlaceholder"></textarea>
+          </div>
+
+          <div class="row" style="flex-direction: column; align-items: flex-start;">
+            <div class="label-group" style="margin-bottom: 12px;">
+              <div class="label" data-i18n="customSiteLabel">Per-Site Customization</div>
+              <div class="hint" data-i18n="customSiteHint">Choose a specific emoji set for certain websites.</div>
+            </div>
+            <div style="display: flex; gap: 10px; width: 100%;">
+              <input type="text" id="customDomainInput" placeholder="example.com"
+                data-i18n-placeholder="domainPlaceholder">
+              <select id="customSetSelect" style="width: auto;">
+                <option value="apple">Apple</option>
+                <option value="google">Google</option>
+                <option value="fluent-color">Fluent (3D)</option>
+                <option value="twitter">Twitter</option>
+                <option value="facebook">Facebook</option>
+                <option value="joypixels">JoyPixels</option>
+                <option value="openmoji">OpenMoji</option>
+                <option value="system">System</option>
+              </select>
+              <button id="addRuleBtn" data-i18n="addRule" class="btn-primary">Add Rule</button>
+            </div>
+            <div id="customRulesList"
+              style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 12px;"></div>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: var(--accent); background: rgba(78, 161, 255, 0.03);">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+              </path>
+            </svg>
+            <span data-i18n="supportProject">Support Project</span>
+          </div>
+          <button id="supportBtn" class="btn-primary" style="width: 100%; padding: 12px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"
+              stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+              </path>
+            </svg>
+            <span data-i18n="supportProject">Support Project</span>
+          </button>
         </div>
       </div>
-      <div class="row">
-        <div class="label"><span data-i18n="strictLabel">Strict set only</span> <span class="status"
-            id="strictStatus"></span></div>
-        <label class="switch">
-          <input type="checkbox" id="strict">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="hint" data-i18n="strictHint">When enabled, TrueMoji uses only the selected image set. If an emoji is
-        missing in that set, it
-        remains as native text. Disable to allow fallback to other sets when an image is unavailable.</div>
 
-      <div class="row">
-        <div class="label" data-i18n="emojiSizeLabel">Emoji Size</div>
-        <div class="range-wrap">
-          <input type="range" id="emojiSize" min="1.0" max="1.5" step="0.05" value="1.0">
-          <span id="emojiSizeValue">1.0x</span>
+      <div class="side">
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M23 4v6h-6M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span data-i18n="reloadTab">Reload Tab</span>
+          </div>
+          <button id="reloadTab" class="btn-secondary" style="width: 100%; padding: 12px;"
+            data-i18n="reloadTabBtn">Reload Tab</button>
         </div>
-      </div>
-      <div class="hint" data-i18n="emojiSizeHint">Adjust the size of the emoji images relative to the text.</div>
 
-      <div class="row" style="display: block;">
-        <div class="label" data-i18n="excludeListLabel" style="margin-bottom: 8px;">Excluded Domains</div>
-        <textarea id="excludeList" placeholder="example.com" data-i18n-placeholder="excludePlaceholder"></textarea>
-      </div>
-      <div class="hint" data-i18n="excludeListHint">Enter domains where TrueMoji should be disabled (one per line).
-        Example: docs.google.com</div>
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"></path>
+            </svg>
+            <span data-i18n="preview">Live Preview</span>
+          </div>
+          <button id="toggleTest" class="btn-secondary"
+            style="width: 100%; margin-bottom: 20px; border-color: var(--accent); color: var(--accent);"
+            data-i18n="previewEmojisBtn">Preview
+            Emojis</button>
 
-      <div class="row">
-        <div class="label" data-i18n="showOriginalLabel">Show original on hover</div>
-        <label class="switch">
-          <input type="checkbox" id="showOriginal">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="hint" data-i18n="showOriginalHint">Show the original native emoji when you hover over the replaced
-        image.</div>
-
-      <div class="row" style="display: block;">
-        <div class="label" data-i18n="shortcutLabel" style="margin-bottom: 8px;">Keyboard Shortcut</div>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="shortcutInput" placeholder="Click to record shortcut" readonly
-            style="flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); box-sizing: border-box;"
-            data-i18n-placeholder="shortcutPlaceholder">
-          <button id="clearShortcutBtn"
-            style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--fg); cursor: pointer;"
-            title="Clear Shortcut" data-i18n-title="clearShortcut">✕</button>
+          <div class="preview-box">
+            <div class="preview-text">😀 😁 😂 😇 🤓 😈 👽 🤖 💩 👾</div>
+            <div id="testArea"
+              style="display:none; margin-top:20px; border-top:1px solid var(--border); padding-top:20px;"></div>
+          </div>
         </div>
-      </div>
-      <div class="hint" data-i18n="shortcutHint">Click the input and press your desired key combination to toggle
-        TrueMoji.</div>
-
-      <div class="row" style="display: block;">
-        <div class="label" data-i18n="customSiteLabel" style="margin-bottom: 8px;">Per-Site Customization</div>
-        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-          <input type="text" id="customDomainInput" placeholder="example.com"
-            style="flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg);"
-            data-i18n-placeholder="domainPlaceholder">
-          <select id="customSetSelect"
-            style="padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--fg);">
-            <option value="apple">Apple</option>
-            <option value="google">Google</option>
-            <option value="fluent-color">Fluent</option>
-            <option value="twitter">Twitter</option>
-            <option value="facebook">Facebook</option>
-            <option value="facebook-old">FB (Old)</option>
-            <option value="openmoji">OpenMoji</option>
-          </select>
-          <button id="addRuleBtn" data-i18n="addRule">Add Rule</button>
-        </div>
-        <div id="customRulesList" style="display: flex; flex-direction: column; gap: 8px;"></div>
-      </div>
-      <div class="hint" data-i18n="customSiteHint">Choose a specific emoji set for certain websites.</div>
-
-      <div class="row">
-        <div class="label"><span data-i18n="autoReloadLabel">Auto reload pages</span> <span class="status"
-            id="autoReloadStatus"></span></div>
-        <label class="switch">
-          <input type="checkbox" id="autoReload">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="hint" data-i18n="autoReloadHint">Automatically reload open pages when you change the image set or
-        settings.</div>
-      <div class="actions">
-        <button id="reloadTab" data-i18n="reloadTab">Reload tab</button>
-        <button id="toggleTest" data-i18n="preview">Preview Emojis</button>
-        <button id="checkUpdateBtn" data-i18n="checkUpdate">Check for update</button>
-      </div>
-      <div class="preview">😀 🇸🇦 ❤️ 👍🏻 #️⃣</div>
-      <div id="testArea" style="display:none; margin-top:20px; border-top:1px solid var(--border); padding-top:20px;">
-        <!-- Test content will be injected here -->
       </div>
     </div>
   </div>

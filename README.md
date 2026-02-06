@@ -1,8 +1,9 @@
 <div align="center">
-  <img src="icon.png" width="128" alt="TrueMoji Icon" />
+  <img src="icons/icon_128x128.png" width="128" alt="TrueMoji Icon" />
   <h1>TrueMoji</h1>
 
   [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
+  ![Firefox Coming Soon](https://img.shields.io/badge/Firefox-Coming_Soon-orange?style=for-the-badge&logo=firefox-browser)
 </div>
 
 <div align="center">
@@ -19,7 +20,7 @@ TrueMoji replaces native system emojis with beautiful, high-quality image sets l
 | <img src="screenshots/flags-before.png" width="100%" /> | <img src="screenshots/flags-after.png" width="100%" /> |
 
 ## Features
-- **Multiple Emoji Sets**: Choose between Apple, Google, Twitter, Facebook, OpenMoji, and Fluent Design.
+- **Multiple Emoji Sets**: Choose between Apple, Google, Twitter, Facebook, OpenMoji, JoyPixels, Samsung, Noto Color, and Microsoft Fluent (3D).
 - **Per-Site Customization**: Assign different emoji sets to specific websites (e.g., Twitter emojis on Twitter, Apple emojis elsewhere).
 - **Excluded Domains**: Disable TrueMoji completely on specific websites.
 - **Keyboard Shortcut**: Toggle the extension on/off instantly with a customizable shortcut.
@@ -37,12 +38,6 @@ TrueMoji replaces native system emojis with beautiful, high-quality image sets l
 
 ### Options Page
 ![Options Page](screenshots/Options_en.png)
-
-## Installation
-1. Go to the [Chrome Web Store page](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg).
-2. Click **Add to Chrome**.
-3. Confirm by clicking **Add extension**.
-4. Enjoy beautiful emojis everywhere!
 
 ## Support
 If you encounter any issues or have suggestions, please open an issue on GitHub:

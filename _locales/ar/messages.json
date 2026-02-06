@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "TrueMoji",
+    "description": "اسم الإضافة."
+  },
+  "appDesc": {
+    "message": "استبدال إيموجيات المتصفح بإيموجيات صور عالية الجودة وأنماط بصرية متعددة.",
+    "description": "وصف الإضافة."
+  },
+  "actionTitle": {
+    "message": "إعدادات TrueMoji",
+    "description": "تلميح لأيقونة الإضافة."
+  }
+}

@@ -12,7 +12,8 @@
       --fg: #111;
       --muted: #6b7280;
       --accent: #0a66c2;
-      --border: #e5e7eb
+      --border: #e5e7eb;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -22,95 +23,107 @@
         --fg: #e5e7eb;
         --muted: #9aa0a6;
         --accent: #4ea1ff;
-        --border: #1f2937
+        --border: #1f2937;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       }
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      font-family: system-ui, Segoe UI, Arial, sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       color: var(--fg);
-      background: var(--bg)
+      background: var(--bg);
+      line-height: 1.5;
     }
 
-    :lang(ar) {
-      font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+    html[lang="ar"] body {
+      font-family: 'Tajawal', system-ui, sans-serif;
+    }
+
+    html[lang="ar"] button {
+      font-family: 'Tajawal', system-ui, sans-serif;
     }
 
     .wrap {
-      width: 300px;
-      padding: 12px
+      width: 340px;
+      padding: 16px;
     }
 
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px
+      margin-bottom: 16px;
     }
 
     header h1 {
-      font-size: 16px;
-      margin: 0
-    }
-
-    .lang-toggle {
-      background: none;
-      border: none;
-      font-size: 14px;
-      cursor: pointer;
-      color: var(--accent);
-      padding: 4px;
-      font-weight: 600;
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: -0.5px;
     }
 
     .card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
     }
 
     .row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
-      border-top: 1px solid var(--border)
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      gap: 12px;
     }
 
     .row:first-child {
-      border-top: none
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .label-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .label {
       font-weight: 600;
-      font-size: 13px;
-      color: var(--fg);
+      font-size: 14px;
       display: flex;
       align-items: center;
-      gap: 8px
+      gap: 6px;
     }
 
     .status {
-      font-size: 12px;
-      color: var(--muted);
+      padding: 2px 8px;
       border: 1px solid var(--border);
       border-radius: 999px;
-      padding: 2px 8px
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 500;
     }
 
+    /* Switch */
     .switch {
       position: relative;
-      display: inline-block;
-      width: 44px;
-      height: 24px
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
     }
 
     .switch input {
       opacity: 0;
       width: 0;
-      height: 0
+      height: 0;
     }
 
     .slider {
@@ -118,66 +131,105 @@
       inset: 0;
       background: var(--border);
       border-radius: 999px;
-      transition: background .2s
+      transition: 0.3s;
     }
 
     .slider::before {
       content: "";
       position: absolute;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       left: 3px;
       top: 3px;
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: #fff;
       border-radius: 50%;
-      transition: transform .2s, border-color .2s
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
-    .switch input:checked+.slider {
-      background: rgba(78, 161, 255, .5)
+    input:checked+.slider {
+      background: var(--accent);
     }
 
-    .switch input:checked+.slider::before {
-      transform: translateX(20px);
-      border-color: var(--accent)
+    input:checked+.slider::before {
+      transform: translateX(18px);
     }
 
+    /* Segmented Control */
     .seg {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-top: 8px;
     }
 
     .seg-btn {
-      padding: 6px 8px;
+      padding: 8px;
       font-size: 12px;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--card);
       color: var(--fg);
-      cursor: pointer
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .seg-btn:hover {
+      border-color: var(--accent);
     }
 
     .seg-btn.selected {
+      background: var(--accent);
+      color: #fff;
       border-color: var(--accent);
-      color: var(--accent)
+      font-weight: 600;
     }
 
-    .actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px
-    }
-
-    button {
-      padding: 6px 8px;
-      font-size: 12px;
-      border-radius: 8px;
+    /* Buttons */
+    .btn-secondary,
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
       border: 1px solid var(--border);
       background: var(--card);
       color: var(--fg);
-      cursor: pointer
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .lang-toggle {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 4px 8px;
     }
   </style>
 </head>
@@ -186,40 +238,68 @@
   <div class="wrap">
     <header>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <img src="icon.png" width="20" height="20" alt="Icon">
+        <img src="icons/icon_48x48.png" width="24" height="24" alt="Icon">
         <h1 data-i18n="title">TrueMoji</h1>
       </div>
-      <div style="display: flex; gap: 8px; align-items: center;">
+      <div style="display: flex; gap: 4px; align-items: center;">
         <button class="lang-toggle" id="langToggle">AR</button>
-        <button id="openOptions" data-i18n="optionsLink">Options</button>
+        <button id="openOptions" class="btn-secondary" data-i18n="optionsLink" style="padding: 6px 10px; font-size: 12px;">Options</button>
       </div>
     </header>
+
     <div class="card">
       <div class="row">
-        <div class="label"><span data-i18n="enableLabel">Enable TrueMoji</span> <span class="status"
-            id="enabledStatus"></span></div>
-        <label class="switch"><input type="checkbox" id="enabled"><span class="slider"></span></label>
+        <div class="label-group">
+          <div class="label">
+            <span data-i18n="enableLabel">Enable TrueMoji</span>
+            <span class="status" id="enabledStatus"></span>
+          </div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="enabled">
+          <span class="slider"></span>
+        </label>
       </div>
+
       <div class="row" id="excludeSiteRow" style="display: none;">
-        <div class="label"><span data-i18n="excludeSite">Disable on this site</span> <span class="status"
-            id="excludeSiteStatus"></span></div>
-        <label class="switch"><input type="checkbox" id="excludeSite"><span class="slider"></span></label>
+        <div class="label-group">
+          <div class="label">
+            <span data-i18n="excludeSite">Disable on this site</span>
+            <span class="status" id="excludeSiteStatus"></span>
+          </div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="excludeSite">
+          <span class="slider"></span>
+        </label>
       </div>
-      <div class="row">
-        <div class="label"><span data-i18n="setLabel">Image set</span> <span class="status" id="setStatus"></span></div>
+
+      <div class="row" style="flex-direction: column; align-items: stretch; border-bottom: none; padding-bottom: 4px;">
+        <div class="label">
+          <span data-i18n="setLabel">Image set</span>
+          <span class="status" id="setStatus"></span>
+        </div>
+        <div class="seg" id="setSeg">
+          <button class="seg-btn" data-set="apple" data-i18n-set="apple">Apple</button>
+          <button class="seg-btn" data-set="google" data-i18n-set="google">Google</button>
+          <button class="seg-btn" data-set="fluent-color" data-i18n-set="fluent">Fluent (3D)</button>
+          <button class="seg-btn" data-set="twitter" data-i18n-set="twitter">Twitter</button>
+          <button class="seg-btn" data-set="facebook" data-i18n-set="facebook">Facebook</button>
+          <button class="seg-btn" data-set="joypixels" data-i18n-set="joypixels">JoyPixels</button>
+          <button class="seg-btn" data-set="openmoji" data-i18n-set="openmoji">OpenMoji</button>
+          <button class="seg-btn" data-set="system" data-i18n-set="system">System</button>
+        </div>
       </div>
-      <div class="seg" id="setSeg">
-        <button class="seg-btn" data-set="apple" data-i18n-set="apple">Apple</button>
-        <button class="seg-btn" data-set="google" data-i18n-set="google">Google</button>
-        <button class="seg-btn" data-set="fluent-color" data-i18n-set="fluent">Fluent</button>
-        <button class="seg-btn" data-set="openmoji" data-i18n-set="openmoji">OpenMoji</button>
-        <button class="seg-btn" data-set="twitter" data-i18n-set="twitter">Twitter</button>
-        <button class="seg-btn" data-set="facebook" data-i18n-set="facebook">Facebook</button>
-        <button class="seg-btn" data-set="facebook-old" data-i18n-set="facebookOld">FB (Old)</button>
-      </div>
-      <div class="row" style="border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px;">
-        <button id="checkUpdateBtn" style="width: 100%; justify-content: center; display: flex; align-items: center;">
-          <span data-i18n="checkUpdate">Check for update</span>
+
+      <div style="margin-top: 16px;">
+        <button id="supportBtn" class="btn-primary" style="width: 100%; padding: 10px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+            </path>
+          </svg>
+          <span data-i18n="supportProject">Support Project</span>
         </button>
       </div>
     </div>

@@ -14,7 +14,7 @@ const autoReloadEl = document.getElementById('autoReload')
 const reloadEl = document.getElementById('reloadTab')
 const toggleTestEl = document.getElementById('toggleTest')
 const testAreaEl = document.getElementById('testArea')
-const previewEl = document.querySelector('.preview')
+const previewEl = document.querySelector('.preview-text')
 const langToggleEl = document.getElementById('langToggle')
 const checkUpdateBtn = document.getElementById('checkUpdateBtn')
 const emojiSizeEl = document.getElementById('emojiSize')
@@ -27,6 +27,7 @@ const customDomainInputEl = document.getElementById('customDomainInput')
 const customSetSelectEl = document.getElementById('customSetSelect')
 const addRuleBtnEl = document.getElementById('addRuleBtn')
 const customRulesListEl = document.getElementById('customRulesList')
+const supportBtn = document.getElementById('supportBtn')
 let currentLang = DEFAULT_LANG_KEY
 const DATA_URL = 'https://cdn.jsdelivr.net/npm/emoji-datasource@latest/emoji.json'
 function SET_BASE(set) { return `https://cdn.jsdelivr.net/npm/emoji-datasource-${set}@latest/img/${set}/64/` }
@@ -51,6 +52,14 @@ function hex(cp) { const s = cp.toString(16).toUpperCase(); return s.length < 4 
 function unifiedFromEmoji(s) { const cps = []; for (const ch of s) cps.push(hex(ch.codePointAt(0))); return cps.join('-') }
 function guessImageName(unified) { return unified.toLowerCase() + '.png' }
 function urlFor(set, image, unified) {
+    if (set === 'system') return null;
+    const cleanUni = unified.replace(/-FE0F/gi, '');
+    if (set === 'fluent-color') {
+        return `https://cdn.jsdelivr.net/gh/bignutty/fluent-emoji@latest/static/${cleanUni.toLowerCase()}.png`
+    }
+    if (set === 'joypixels') {
+        return `https://cdn.jsdelivr.net/emojione/assets/png/${cleanUni.toUpperCase()}.png`
+    }
     if (set === 'openmoji') {
         if ((unified.includes('20E3') || unified.includes('200D')) && unified.indexOf('-') !== -1) {
             return `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/svg/${unified}.svg`
@@ -58,28 +67,53 @@ function urlFor(set, image, unified) {
         const cleaned = unified.replace(/-FE0F/g, '').toUpperCase()
         return `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/svg/${cleaned}.svg`
     }
-    if (set === 'facebook-old') {
-        return `https://cdn.jsdelivr.net/npm/emoji-datasource-facebook@4.0.0/img/facebook/64/${image}`
-    }
     return SET_BASE(set) + image + '?v=16'
 }
-function loadData() {
-    return fetch(DATA_URL).then(r => r.json()).then(arr => {
-        emojiData = arr
-        for (const e of arr) {
-            const avail = { apple: !!e.has_img_apple, google: !!e.has_img_google, twitter: !!e.has_img_twitter, facebook: !!e.has_img_facebook }
-            if (e.unified) { mapUnified.set(e.unified, e.image); mapEntry.set(e.unified, { image: e.image, avail, unified: e.unified }) }
-            if (e.non_qualified) { mapNonQualified.set(e.non_qualified, e.image); mapEntry.set(e.non_qualified, { image: e.image, avail, unified: e.unified }) }
-            if (e.skin_variations) {
-                for (const k in e.skin_variations) {
-                    const v = e.skin_variations[k]
-                    if (v.unified && v.image) { mapUnified.set(v.unified, v.image); mapEntry.set(v.unified, { image: v.image, avail, unified: v.unified }) }
-                }
+const CACHE_KEY = 'truemoji_data'
+const CACHE_TTL = 7 * 24 * 60 * 60 * 1000 // 7 days
+
+function processData(arr) {
+    emojiData = arr
+    for (const e of arr) {
+        const avail = {
+            apple: !!e.has_img_apple,
+            google: !!e.has_img_google,
+            twitter: !!e.has_img_twitter,
+            facebook: !!e.has_img_facebook,
+            messenger: !!e.has_img_messenger
+        }
+        if (e.unified) { mapUnified.set(e.unified, e.image); mapEntry.set(e.unified, { image: e.image, avail, unified: e.unified }) }
+        if (e.non_qualified) { mapNonQualified.set(e.non_qualified, e.image); mapEntry.set(e.non_qualified, { image: e.image, avail, unified: e.unified }) }
+        if (e.skin_variations) {
+            for (const k in e.skin_variations) {
+                const v = e.skin_variations[k]
+                if (v.unified && v.image) { mapUnified.set(v.unified, v.image); mapEntry.set(v.unified, { image: v.image, avail, unified: v.unified }) }
             }
         }
+    }
+}
+
+function loadData() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get([CACHE_KEY, 'truemoji_data_ts'], (res) => {
+            const now = Date.now()
+            if (res[CACHE_KEY] && res.truemoji_data_ts && (now - res.truemoji_data_ts < CACHE_TTL)) {
+                processData(res[CACHE_KEY])
+                resolve()
+            } else {
+                fetch(DATA_URL)
+                    .then(r => r.json())
+                    .then(arr => {
+                        chrome.storage.local.set({ [CACHE_KEY]: arr, truemoji_data_ts: now })
+                        processData(arr)
+                        resolve()
+                    })
+                    .catch(reject)
+            }
+        })
     })
 }
-function fragmentForText(text, set) {
+function fragmentForText(text, set, previewOnly = false) {
     EMOJI_PATTERN.lastIndex = 0
     const frag = document.createDocumentFragment()
     let lastIndex = 0, m
@@ -87,27 +121,6 @@ function fragmentForText(text, set) {
         const i = m.index
         if (i > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, i)))
         const token = m[0]
-        if (set === 'fluent-color') {
-            if (!SKIN_MOD_ONLY.test(token)) {
-                const sp = document.createElement('span')
-                const linkId = 'fluent-emoji-color-css'
-                if (!document.getElementById(linkId)) {
-                    const link = document.createElement('link')
-                    link.rel = 'stylesheet'
-                    link.id = linkId
-                    link.href = 'https://tetunori.github.io/fluent-emoji-webfont/dist/FluentEmojiColor.css'
-                    document.documentElement.appendChild(link)
-                }
-                sp.textContent = token
-                sp.style.fontFamily = 'Fluent Emoji Color'
-                sp.style.fontSize = '1em'
-                sp.style.lineHeight = '1em'
-                sp.style.verticalAlign = '-0.1em'
-                frag.appendChild(sp)
-            }
-            lastIndex = i + token.length
-            continue
-        }
         const uni = unifiedFromEmoji(token)
         const clean = uni.replace(/-FE0F/g, '')
         const entry = mapEntry.get(uni) || mapEntry.get(clean)
@@ -115,14 +128,34 @@ function fragmentForText(text, set) {
         if (!image) image = guessImageName(clean)
         if (image) {
             const img = document.createElement('img')
-            const sets = ['apple', 'google', 'openmoji', 'twitter', 'facebook']
-            let candidates = [set, ...sets.filter(s => s !== set)]
-            if (entry) candidates = candidates.filter(s => s === 'openmoji' || s === 'facebook-old' || entry.avail[s])
+            let candidates
+            if (previewOnly) {
+                candidates = [set]
+            } else {
+                const sets = ['apple', 'google', 'fluent-color', 'joypixels', 'noto-color', 'samsung', 'openmoji', 'twitter', 'facebook', 'messenger']
+                candidates = [set, ...sets.filter(s => s !== set)]
+                if (entry) candidates = candidates.filter(s => s === 'openmoji' || s === 'facebook-old' || s === 'messenger' || s === 'fluent-color' || s === 'joypixels' || s === 'noto-color' || s === 'samsung' || entry.avail[s])
+            }
             let idx = 0
             const applySrc = () => {
-                if (idx >= candidates.length) { if (!SKIN_MOD_ONLY.test(token)) img.replaceWith(document.createTextNode(token)); else img.remove(); return }
-                const s = candidates[idx++]
-                img.src = urlFor(s, image, entry ? entry.unified : uni)
+                if (idx >= candidates.length) {
+                    if (previewOnly) {
+                        // For preview, if the specific set fails, show a placeholder or the text with a red indicator
+                        const span = document.createElement('span');
+                        span.textContent = token;
+                        span.style.opacity = '0.3';
+                        span.style.filter = 'grayscale(1)';
+                        span.title = 'Failed to load ' + set;
+                        img.replaceWith(span);
+                        return;
+                    }
+                    if (!SKIN_MOD_ONLY.test(token)) img.replaceWith(document.createTextNode(token));
+                    else img.remove();
+                    return;
+                }
+                const src = urlFor(candidates[idx++], image, entry ? entry.unified : uni);
+                if (!src) { applySrc(); return; }
+                img.src = src;
             }
             img.onerror = () => applySrc()
             applySrc()
@@ -145,8 +178,8 @@ function renderPreview() {
     if (!previewEl) return
     const selected = segEl.querySelector('.seg-btn.selected')?.dataset.set || DEFAULT_SET
     previewEl.innerHTML = ''
-    if (enabledEl.checked) {
-        previewEl.appendChild(fragmentForText(basePreviewText, selected))
+    if (enabledEl.checked && selected !== 'system') {
+        previewEl.appendChild(fragmentForText(basePreviewText, selected, true))
     } else {
         previewEl.textContent = basePreviewText
     }
@@ -211,8 +244,8 @@ function renderTestArea(set) {
                 const emojiChar = charFromUnified(uni)
                 const emojiDiv = document.createElement('div')
                 emojiDiv.className = 'emoji'
-                if (enabledEl.checked) {
-                    emojiDiv.appendChild(fragmentForText(emojiChar, set))
+                if (enabledEl.checked && set !== 'system') {
+                    emojiDiv.appendChild(fragmentForText(emojiChar, set, true))
                 } else {
                     emojiDiv.textContent = emojiChar
                 }
@@ -237,21 +270,25 @@ function renderTestArea(set) {
 }
 
 function updateEnabledStatus() {
+    if (!enabledStatusEl) return
     const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
     enabledStatusEl.textContent = enabledEl.checked ? t.statusOn : t.statusOff
 }
 
 function updateStrictStatus() {
+    if (!strictStatusEl) return
     const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
-    if (strictStatusEl) strictStatusEl.textContent = strictEl.checked ? t.statusOn : t.statusOff
+    strictStatusEl.textContent = strictEl.checked ? t.statusOn : t.statusOff
 }
 
 function updateAutoReloadStatus() {
+    if (!autoReloadStatusEl) return
     const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
-    if (autoReloadStatusEl && autoReloadEl) autoReloadStatusEl.textContent = autoReloadEl.checked ? t.statusOn : t.statusOff
+    autoReloadStatusEl.textContent = autoReloadEl.checked ? t.statusOn : t.statusOff
 }
 
 function updateSetStatus(selected) {
+    if (!setStatusEl) return
     const s = selected || (segEl.querySelector('.seg-btn.selected')?.dataset.set || DEFAULT_SET)
     const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
 
@@ -261,11 +298,13 @@ function updateSetStatus(selected) {
     const map = {
         'apple': 'apple',
         'google': 'google',
+        'system': 'system',
         'fluent-color': 'fluent',
         'openmoji': 'openmoji',
         'twitter': 'twitter',
         'facebook': 'facebook',
-        'facebook-old': 'facebookOld'
+        'facebook-old': 'facebookOld',
+        'messenger': 'messenger'
     }
 
     if (map[s] && t[map[s]]) {
@@ -514,7 +553,7 @@ langToggleEl.addEventListener('click', () => {
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'sync') {
         if (changes.lang) {
-            currentLang = changes.lang.newValue
+            currentLang = changes.lang.newValue || DEFAULT_LANG_KEY
             applyLanguage(currentLang)
             updateLangToggle()
             updateEnabledStatus()
@@ -524,15 +563,16 @@ chrome.storage.onChanged.addListener((changes, area) => {
             renderPreview()
         }
         if (changes.enabled) {
-            enabledEl.checked = changes.enabled.newValue
+            enabledEl.checked = !!changes.enabled.newValue
             updateEnabledStatus()
             renderPreview()
         }
         if (changes.set) {
             const current = changes.set.newValue || DEFAULT_SET
-            for (const b of segEl.querySelectorAll('.seg-btn')) {
+            const buttons = segEl.querySelectorAll('.seg-btn')
+            buttons.forEach(b => {
                 b.classList.toggle('selected', b.dataset.set === current)
-            }
+            })
             updateSetStatus(current)
             renderPreview()
         }
@@ -576,39 +616,9 @@ toggleTestEl.addEventListener('click', () => {
     }
 })
 
-checkUpdateBtn.addEventListener('click', () => {
-    const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
-
-    // If already showing "Visit Repository", then open it
-    if (checkUpdateBtn.dataset.updateAvailable === 'true') {
-        chrome.tabs.create({ url: 'https://github.com/voidksa/TrueMoji' })
-        return
-    }
-
-    checkUpdateBtn.textContent = t.checking
-    checkUpdateBtn.disabled = true
-
-    chrome.runtime.sendMessage({ action: 'check_update' }, response => {
-        checkUpdateBtn.disabled = false
-        if (chrome.runtime.lastError) {
-            checkUpdateBtn.textContent = t.updateError
-            setTimeout(() => {
-                checkUpdateBtn.textContent = t.checkUpdate
-            }, 2000)
-            return
-        }
-
-        if (response && response.available) {
-            checkUpdateBtn.textContent = t.visitRepo + ` (v${response.version})`
-            checkUpdateBtn.dataset.updateAvailable = 'true'
-            checkUpdateBtn.style.borderColor = 'var(--accent)'
-            checkUpdateBtn.style.color = 'var(--accent)'
-        } else {
-            checkUpdateBtn.textContent = t.noUpdate
-            setTimeout(() => {
-                checkUpdateBtn.textContent = t.checkUpdate
-                checkUpdateBtn.dataset.updateAvailable = 'false'
-            }, 2000)
-        }
+if (supportBtn) {
+    supportBtn.addEventListener('click', () => {
+        const url = currentLang === 'ar' ? 'https://creators.sa/ar/voidksa' : 'https://creators.sa/en/voidksa'
+        chrome.tabs.create({ url })
     })
-})
+}

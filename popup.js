@@ -11,6 +11,7 @@ const excludeSiteStatusEl = document.getElementById('excludeSiteStatus')
 const openOptionsEl = document.getElementById('openOptions')
 const langToggleEl = document.getElementById('langToggle')
 const checkUpdateBtn = document.getElementById('checkUpdateBtn')
+const supportBtn = document.getElementById('supportBtn')
 let currentLang = DEFAULT_LANG_KEY
 
 function updateEnabledStatus() {
@@ -29,11 +30,12 @@ function updateSetStatus(selected) {
   const map = {
     'apple': 'apple',
     'google': 'google',
+    'system': 'system',
     'fluent-color': 'fluent',
+    'joypixels': 'joypixels',
     'openmoji': 'openmoji',
     'twitter': 'twitter',
-    'facebook': 'facebook',
-    'facebook-old': 'facebookOld'
+    'facebook': 'facebook'
   }
 
   if (map[s] && t[map[s]]) {
@@ -71,43 +73,18 @@ chrome.storage.sync.get({ enabled: DEFAULT_ENABLED, set: DEFAULT_SET, lang: DEFA
   }
   updateSetStatus(current)
 
-  // Quick Exclude Logic
-  if (excludeSiteRow && excludeSiteEl) {
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-      if (!tabs || !tabs.length) return
-      const urlStr = tabs[0].url
-      if (!urlStr || !urlStr.startsWith('http')) return
-
-      try {
-        const url = new URL(urlStr)
-        const hostname = url.hostname
-
-        excludeSiteRow.style.display = 'flex'
-
-        const list = (v.excludedDomains || '').split('\n').map(x => x.trim()).filter(x => x)
-        excludeSiteEl.checked = list.includes(hostname)
-        updateExcludeSiteStatus()
-
-        excludeSiteEl.addEventListener('change', () => {
-          updateExcludeSiteStatus()
-          chrome.storage.sync.get({ excludedDomains: '' }, current => {
-            let currentList = (current.excludedDomains || '').split('\n').map(x => x.trim()).filter(x => x)
-            if (excludeSiteEl.checked) {
-              if (!currentList.includes(hostname)) currentList.push(hostname)
-            } else {
-              currentList = currentList.filter(x => x !== hostname)
-            }
-            chrome.storage.sync.set({ excludedDomains: currentList.join('\n') }, () => {
-              // Optional: Reload tab to apply changes immediately?
-              // For now, let's just save. The user might need to reload manually or we can trigger it.
-              // Given the user instructions, maybe simple save is enough.
-            })
-          })
-        })
-      } catch (e) {
-        console.error(e)
-      }
+  if (supportBtn) {
+    supportBtn.addEventListener('click', () => {
+      const url = currentLang === 'ar' ? 'https://creators.sa/ar/voidksa' : 'https://creators.sa/en/voidksa'
+      chrome.tabs.create({ url })
     })
+  }
+
+  // Set initial text for support button if not covered by updateUI
+  const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
+  if (supportBtn) {
+    const span = supportBtn.querySelector('span')
+    if (span) span.textContent = t.supportProject
   }
 })
 
@@ -150,14 +127,15 @@ chrome.storage.onChanged.addListener((changes, area) => {
       updateExcludeSiteStatus()
     }
     if (changes.enabled) {
-      enabledEl.checked = changes.enabled.newValue
+      enabledEl.checked = !!changes.enabled.newValue
       updateEnabledStatus()
     }
     if (changes.set) {
-      const newSet = changes.set.newValue
-      for (const b of segEl.querySelectorAll('.seg-btn')) {
+      const newSet = changes.set.newValue || DEFAULT_SET
+      const buttons = segEl.querySelectorAll('.seg-btn')
+      buttons.forEach(b => {
         b.classList.toggle('selected', b.dataset.set === newSet)
-      }
+      })
       updateSetStatus(newSet)
     }
   }
@@ -165,44 +143,6 @@ chrome.storage.onChanged.addListener((changes, area) => {
 
 openOptionsEl.addEventListener('click', () => {
   if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage()
-})
-
-checkUpdateBtn.addEventListener('click', () => {
-  const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
-  const span = checkUpdateBtn.querySelector('span')
-
-  // If already showing "Visit Repository", then open it
-  if (checkUpdateBtn.dataset.updateAvailable === 'true') {
-    chrome.tabs.create({ url: 'https://github.com/voidksa/TrueMoji' })
-    return
-  }
-
-  span.textContent = t.checking
-  checkUpdateBtn.disabled = true
-
-  chrome.runtime.sendMessage({ action: 'check_update' }, response => {
-    checkUpdateBtn.disabled = false
-    if (chrome.runtime.lastError) {
-      span.textContent = t.updateError
-      setTimeout(() => {
-        span.textContent = t.checkUpdate
-      }, 2000)
-      return
-    }
-
-    if (response && response.available) {
-      span.textContent = t.visitRepo + ` (v${response.version})`
-      checkUpdateBtn.dataset.updateAvailable = 'true'
-      checkUpdateBtn.style.borderColor = 'var(--accent)'
-      checkUpdateBtn.style.color = 'var(--accent)'
-    } else {
-      span.textContent = t.noUpdate
-      setTimeout(() => {
-        span.textContent = t.checkUpdate
-        checkUpdateBtn.dataset.updateAvailable = 'false'
-      }, 2000)
-    }
-  })
 })
 
 // Exclude site logic
@@ -228,8 +168,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
   chrome.storage.sync.get({ excludedDomains: '' }, v => {
     const lines = v.excludedDomains.split('\n').map(s => s.trim()).filter(Boolean)
     cb.checked = lines.includes(domain)
+    updateExcludeSiteStatus()
 
     cb.addEventListener('change', () => {
+      updateExcludeSiteStatus()
       chrome.storage.sync.get({ excludedDomains: '' }, current => {
         let curLines = current.excludedDomains.split('\n').map(s => s.trim()).filter(Boolean)
         if (cb.checked) {

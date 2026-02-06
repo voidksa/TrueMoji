@@ -1,24 +1,35 @@
 {
     "manifest_version": 3,
-    "name": "TrueMoji",
-    "version": "1.1.0",
-    "description": "Replace browser emojis with high-quality image emojis and multiple visual styles.",
+    "name": "__MSG_appName__",
+    "version": "1.2.0",
+    "description": "__MSG_appDesc__",
+    "default_locale": "en",
     "icons": {
-        "16": "icon.png",
-        "32": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
+        "16": "icons/icon_16x16.png",
+        "48": "icons/icon_48x48.png",
+        "128": "icons/icon_128x128.png",
+        "512": "icons/icon_512x512.png"
     },
     "permissions": [
         "storage",
         "tabs",
         "notifications",
-        "alarms"
+        "alarms",
+        "contextMenus",
+        "declarativeNetRequest"
     ],
     "host_permissions": [
-        "https://cdn.jsdelivr.net/*",
-        "https://raw.githubusercontent.com/*"
+        "<all_urls>"
     ],
+    "declarative_net_request": {
+        "rule_resources": [
+            {
+                "id": "ruleset_1",
+                "enabled": true,
+                "path": "rules.json"
+            }
+        ]
+    },
     "background": {
         "service_worker": "background.js"
     },
@@ -36,11 +47,13 @@
     ],
     "options_page": "options.html",
     "action": {
-        "default_title": "TrueMoji",
+        "default_title": "__MSG_actionTitle__",
         "default_popup": "popup.html",
         "default_icon": {
-            "16": "icon.png",
-            "32": "icon.png"
+            "16": "icons/icon_16x16.png",
+            "32": "icons/icon_48x48.png",
+            "48": "icons/icon_48x48.png",
+            "128": "icons/icon_128x128.png"
         }
     }
 }

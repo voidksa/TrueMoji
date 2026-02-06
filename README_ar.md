@@ -1,8 +1,10 @@
 <div align="center">
-  <img src="icon.png" width="128" alt="TrueMoji Icon" />
+  <img src="icons/icon_128x128.png" width="128" alt="TrueMoji Icon" />
   <h1>TrueMoji</h1>
 
   [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
+  
+  ![Firefox Coming Soon](https://img.shields.io/badge/Firefox-Coming_Soon-orange?style=for-the-badge&logo=firefox-browser)
 </div>
 
 <div align="center">
@@ -19,7 +21,7 @@
 | <img src="screenshots/flags-before.png" width="100%" /> | <img src="screenshots/flags-after.png" width="100%" /> |
 
 ## المميزات
-- **مجموعات إيموجي متعددة**: اختر بين Apple و Google و Twitter و Facebook و OpenMoji و Fluent Design.
+- **مجموعات إيموجي متعددة**: اختر بين Apple و Google و Twitter و Facebook و OpenMoji و JoyPixels و Samsung و Noto Color و Microsoft Fluent (3D).
 - **تخصيص لكل موقع**: تعيين مجموعة إيموجي مختلفة لمواقع محددة (مثلاً إيموجي تويتر في موقع تويتر، وإيموجي آبل في باقي المواقع).
 - **قائمة الاستثناءات**: تعطيل TrueMoji تماماً في مواقع معينة تختارها.
 - **اختصار لوحة المفاتيح**: تشغيل أو إيقاف الإضافة فوراً عبر اختصار مخصص.
@@ -38,13 +40,6 @@
 
 ### صفحة الإعدادات
 ![صفحة الإعدادات](screenshots/Options_ar.png)
-
-## التثبيت
-1. حمل آخر إصدار (ملف `.zip`) من [صفحة الإصدارات](https://github.com/voidksa/TrueMoji/releases/latest).
-2. فك ضغط الملفات.
-3. افتح متصفح Chrome أو Edge واذهب إلى `chrome://extensions`.
-4. فعل "وضع المطور" (Developer mode) في الأعلى.
-5. اضغط على "تحميل إضافة غير مضغوطة" (Load unpacked) واختر المجلد.
 
 ## الدعم والمساعدة
 إذا واجهت أي مشاكل أو لديك اقتراحات، يرجى فتح تذكرة على GitHub:

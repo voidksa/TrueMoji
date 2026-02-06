@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "TrueMoji",
+    "description": "The name of the extension."
+  },
+  "appDesc": {
+    "message": "Replace browser emojis with high-quality image emojis and multiple visual styles.",
+    "description": "The description of the extension."
+  },
+  "actionTitle": {
+    "message": "TrueMoji Settings",
+    "description": "Tooltip for the extension icon."
+  }
+}

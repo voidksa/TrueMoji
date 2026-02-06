@@ -1,6 +1,10 @@
 const TRANSLATIONS = {
   en: {
     title: "TrueMoji",
+    generalSettings: "General Settings",
+    emojiStyle: "Emoji Style",
+    interactionSettings: "Interaction & Shortcuts",
+    websiteControl: "Website Control",
     enableLabel: "Enable TrueMoji",
     statusOn: "On",
     statusOff: "Off",
@@ -14,17 +18,16 @@ const TRANSLATIONS = {
     settingsTitle: "TrueMoji Settings",
     apple: "Apple",
     google: "Google",
-    fluent: "Fluent",
+    fluent: "Fluent (3D)",
+    joypixels: "JoyPixels",
     openmoji: "OpenMoji",
     twitter: "Twitter",
     facebook: "Facebook",
-    facebookOld: "FB (Old)",
-    checkUpdate: "Check for update",
-    checking: "Checking...",
-    updateAvailable: "Update available!",
-    noUpdate: "No update available",
-    updateError: "Error checking",
-    visitRepo: "Visit Repository",
+    rateExtension: "Rate Extension",
+    quickActions: "Quick Actions",
+    quickActionsHint: "Change language or rate the extension.",
+    reloadTabBtn: "Reload Tab",
+    previewEmojisBtn: "Preview Emojis",
     autoReloadLabel: "Auto reload pages",
     autoReloadHint: "Automatically reload open pages when you change the image set or settings.",
     loadMore: "Load more",
@@ -44,10 +47,16 @@ const TRANSLATIONS = {
     domainPlaceholder: "example.com",
     addRule: "Add Rule",
     removeRule: "Remove",
-    clearShortcut: "Clear Shortcut"
+    clearShortcut: "Clear Shortcut",
+    supportProject: "Support Project",
+    contextMenuToggle: "Toggle TrueMoji for this site"
   },
   ar: {
     title: "TrueMoji",
+    generalSettings: "الإعدادات العامة",
+    emojiStyle: "نمط الإيموجي",
+    interactionSettings: "التفاعل والاختصارات",
+    websiteControl: "التحكم في المواقع",
     enableLabel: "تفعيل TrueMoji",
     statusOn: "مفعل",
     statusOff: "معطل",
@@ -61,17 +70,17 @@ const TRANSLATIONS = {
     settingsTitle: "إعدادات TrueMoji",
     apple: "Apple",
     google: "Google",
-    fluent: "Fluent",
+    fluent: "Fluent (3D)",
+    joypixels: "JoyPixels",
     openmoji: "OpenMoji",
     twitter: "Twitter",
     facebook: "Facebook",
-    facebookOld: "FB (Old)",
-    checkUpdate: "التحقق من التحديثات",
-    checking: "جاري التحقق...",
-    updateAvailable: "يوجد تحديث!",
-    noUpdate: "لا يوجد تحديث",
-    updateError: "خطأ في التحقق",
-    visitRepo: "زيارة المستودع",
+    system: "System",
+    rateExtension: "تقييم الإضافة",
+    quickActions: "إجراءات سريعة",
+    quickActionsHint: "تغيير اللغة أو تقييم الإضافة.",
+    reloadTabBtn: "إعادة تحميل التبويب",
+    previewEmojisBtn: "معاينة الإيموجيات",
     autoReloadLabel: "إعادة التحميل التلقائي",
     autoReloadHint: "إعادة تحميل الصفحات المفتوحة تلقائياً عند تغيير مجموعة الصور أو الإعدادات.",
     loadMore: "عرض المزيد",
@@ -91,7 +100,9 @@ const TRANSLATIONS = {
     domainPlaceholder: "example.com",
     addRule: "إضافة قاعدة",
     removeRule: "حذف",
-    clearShortcut: "مسح الاختصار"
+    clearShortcut: "مسح الاختصار",
+    supportProject: "دعم المشروع",
+    contextMenuToggle: "تفعيل/تعطيل TrueMoji لهذا الموقع"
   }
 };
 
@@ -121,10 +132,32 @@ function applyLanguage(lang) {
   });
 
   // Update status text dynamically if needed
-  const enabledStatusEl = document.getElementById('enabledStatus');
+  const updateStatus = (id, checked) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = checked ? t.statusOn : t.statusOff;
+  };
+
   const enabledEl = document.getElementById('enabled');
-  if (enabledStatusEl && enabledEl) {
-    enabledStatusEl.textContent = enabledEl.checked ? t.statusOn : t.statusOff;
+  if (enabledEl) updateStatus('enabledStatus', enabledEl.checked);
+
+  const strictEl = document.getElementById('strict');
+  if (strictEl) updateStatus('strictStatus', strictEl.checked);
+
+  const autoReloadEl = document.getElementById('autoReload');
+  if (autoReloadEl) updateStatus('autoReloadStatus', autoReloadEl.checked);
+
+  const setStatusEl = document.getElementById('setStatus');
+  if (setStatusEl) {
+    const segEl = document.getElementById('setSeg');
+    const selected = segEl?.querySelector('.seg-btn.selected')?.dataset.set;
+    if (selected) {
+      const map = {
+        'apple': 'apple', 'google': 'google', 'system': 'system',
+        'fluent-color': 'fluent', 'joypixels': 'joypixels',
+        'openmoji': 'openmoji', 'twitter': 'twitter', 'facebook': 'facebook'
+      };
+      setStatusEl.textContent = t[map[selected]] || selected;
+    }
   }
 
   // Update button text for set segments
