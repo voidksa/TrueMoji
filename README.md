@@ -13,16 +13,16 @@
 
 Tired of boring default browser emojis? Or seeing empty squares where flags should be? **TrueMoji is the solution.**
 
-TrueMoji replaces native system emojis with beautiful, high-quality image sets like Apple (iOS), Google, Twitter, and more. Enjoy a consistent, vibrant, and fully expressive emoji experience on every website you visit.
+TrueMoji replaces native system emojis with beautiful, high-quality image sets like iOS style, Android style, and more. Enjoy a consistent, vibrant, and fully expressive emoji experience on every website you visit.
 
 ## See the Difference
-| Before (Default System) | After (TrueMoji - Apple Style) |
+| Before (Default System) | After (TrueMoji - iOS Style) |
 |:-----------------------:|:------------------------------:|
 | <img src="screenshots/flags-before.png" width="100%" /> | <img src="screenshots/flags-after.png" width="100%" /> |
 
 ## Features
-- **Multiple Emoji Sets**: Choose between Apple, Google, Twitter, Facebook, OpenMoji, JoyPixels, Samsung, Noto Color, and Microsoft Fluent (3D).
-- **Per-Site Customization**: Assign different emoji sets to specific websites (e.g., Twitter emojis on Twitter, Apple emojis elsewhere).
+- **Multiple Emoji Sets**: Choose from a variety of popular emoji styles and open-source designs.
+- **Per-Site Customization**: Assign different emoji sets to specific websites (e.g., match the site's style on social media, use iOS style elsewhere).
 - **Excluded Domains**: Disable TrueMoji completely on specific websites.
 - **Keyboard Shortcut**: Toggle the extension on/off instantly with a customizable shortcut.
 - **Show Original on Hover**: Hover over any emoji to see the original native character.
