@@ -3,7 +3,6 @@
   <h1>TrueMoji</h1>
 
   [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
-  
   [![Add to Firefox](https://img.shields.io/badge/Add_to_Firefox-Available_Now-orange?style=for-the-badge&logo=firefox-browser)](https://addons.mozilla.org/en-US/firefox/addon/truemoji/)
 </div>
 
