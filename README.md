@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="screenshots/v2/intro-en.png" width="100%" alt="TrueMoji 2.0" />
+  <img src="screenshots/v2/cws-1-hero-en.png" width="100%" alt="TrueMoji 2.0" />
   <br>
 
   [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-FFB800?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
@@ -20,26 +20,15 @@ TrueMoji replaces native system emojis with beautiful, high quality image sets. 
 
 ## See the difference
 
-<table>
-  <tr>
-    <td align="center"><b>Before</b><br>(default system)</td>
-    <td align="center"><b>After</b><br>(TrueMoji 2.0)</td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/v2/problem-en.png" width="100%" alt="Before" /></td>
-    <td><img src="screenshots/v2/solution-en.png" width="100%" alt="After" /></td>
-  </tr>
-</table>
+<img src="screenshots/v2/cws-5-compare-en.png" width="100%" alt="Before and after comparison" />
 
-## Three pillars
+## Styles
 
-<img src="screenshots/v2/features-en.png" width="100%" alt="Quick switch, Emoji picker, Full control" />
+<img src="screenshots/v2/cws-2-styles-en.png" width="100%" alt="Emoji style packs" />
 
-| | |
-|---|---|
-| **Quick switch** | Master toggle, live preview, and a visual pack picker right in the popup. |
-| **Emoji picker** | Search, browse, and copy any emoji in your selected pack's style. Recents and favorites are saved automatically. |
-| **Full control** | Per site rules, excluded domains, keyboard shortcut, settings export and import, and more. |
+## Built-in picker
+
+<img src="screenshots/v2/cws-3-picker-en.png" width="100%" alt="Built-in emoji picker" />
 
 ## What's new in 2.0
 
