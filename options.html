@@ -1,573 +1,562 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>TrueMoji Settings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f7f9fb;
-      --card: #fff;
-      --fg: #111;
-      --muted: #6b7280;
-      --accent: #0a66c2;
-      --border: #e5e7eb;
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
+ <meta charset="utf-8">
+ <title>TrueMoji Settings</title>
+ <link rel="stylesheet" href="theme.css">
+ <style>
+ body { font-size: 14px; }
+ .page {
+ max-width: 1080px;
+ margin: 0 auto;
+ padding: 32px 28px 60px;
+ }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0b0f14;
-        --card: #11161c;
-        --fg: #e5e7eb;
-        --muted: #9aa0a6;
-        --accent: #4ea1ff;
-        --border: #1f2937;
-        --shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-      }
-    }
+ /* Hero header */
+ .hero {
+ display: flex;
+ align-items: flex-start;
+ justify-content: space-between;
+ gap: 20px;
+ margin-bottom: 28px;
+ padding: 22px 24px;
+ background: var(--gradient-cool);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-xl);
+ position: relative;
+ overflow: hidden;
+ }
+ .hero::after {
+ content: "";
+ position: absolute;
+ right: -60px; top: -60px;
+ width: 220px; height: 220px;
+ background: radial-gradient(circle, rgba(255,184,0,0.18) 0%, transparent 70%);
+ pointer-events: none;
+ }
+ html[dir="rtl"] .hero::after { right: auto; left: -60px; }
+ .hero-brand { display: flex; align-items: center; gap: 14px; }
+ .hero-logo {
+ width: 56px; height: 56px;
+ border-radius: 16px;
+ background: var(--gradient-sun);
+ display: flex; align-items: center; justify-content: center;
+ box-shadow: var(--shadow-glow);
+ flex-shrink: 0;
+ }
+ .hero-logo img { width: 44px; height: 44px; }
+ .hero-text h1 {
+ font-size: 28px;
+ font-weight: 800;
+ letter-spacing: -0.03em;
+ margin: 0;
+ line-height: 1.1;
+ }
+ .hero-text p {
+ margin: 6px 0 0;
+ color: var(--muted);
+ font-size: 14px;
+ }
+ .hero-actions { display: flex; gap: 8px; align-items: center; position: relative; z-index: 1; }
 
-    * {
-      box-sizing: border-box;
-    }
+ /* Layout */
+ .layout {
+ display: grid;
+ grid-template-columns: 1fr 320px;
+ gap: 22px;
+ align-items: start;
+ }
+ @media (max-width: 920px) {
+ .layout { grid-template-columns: 1fr; }
+ .side { position: static !important; }
+ }
 
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      margin: 0;
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.5;
-    }
+ .card {
+ background: var(--card);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-lg);
+ padding: 22px 24px;
+ margin-bottom: 18px;
+ box-shadow: var(--shadow-sm);
+ }
+ .card-title {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 0.1em;
+ font-weight: 800;
+ margin: 0 0 16px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ color: var(--accent);
+ }
+ .card-title svg { width: 16px; height: 16px; }
 
-    html[lang="ar"] body {
-      font-family: 'Tajawal', system-ui, sans-serif;
-    }
+ .row {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ padding: 14px 0;
+ border-top: 1px solid var(--border);
+ gap: 18px;
+ }
+ .row:first-of-type { border-top: none; padding-top: 4px; }
+ .row.is-stacked { flex-direction: column; align-items: stretch; padding-top: 14px; }
 
-    html[lang="ar"] button {
-      font-family: 'Tajawal', system-ui, sans-serif;
-    }
+ .label-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+ .label {
+ font-weight: 600;
+ font-size: 14.5px;
+ display: flex; align-items: center; gap: 8px;
+ }
+ .hint {
+ color: var(--muted);
+ font-size: 13px;
+ max-width: 520px;
+ line-height: 1.45;
+ }
 
-    .wrap {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
+ /* Pack grid */
+ .pack-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+ gap: 10px;
+ width: 100%;
+ }
+ .pack-tile {
+ position: relative;
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ padding: 14px;
+ border-radius: var(--radius-md);
+ border: 1.5px solid var(--border);
+ background: var(--bg-elevated);
+ cursor: pointer;
+ transition: all 0.18s ease;
+ text-align: start;
+ font-family: inherit;
+ color: var(--fg);
+ }
+ .pack-tile:hover {
+ border-color: var(--brand-300);
+ transform: translateY(-2px);
+ box-shadow: var(--shadow-md);
+ }
+ .pack-tile.is-selected {
+ border-color: var(--accent);
+ background: var(--accent-soft);
+ }
+ .pack-tile.is-selected::before {
+ content: "";
+ position: absolute; inset: 0;
+ border-radius: var(--radius-md);
+ pointer-events: none;
+ box-shadow: inset 0 0 0 1px var(--accent);
+ }
+ .pack-tile.is-selected::after {
+ content: "✓";
+ position: absolute;
+ top: 8px; right: 10px;
+ width: 18px; height: 18px;
+ border-radius: 50%;
+ background: var(--accent);
+ color: var(--accent-fg);
+ font-size: 11px;
+ font-weight: 800;
+ display: flex; align-items: center; justify-content: center;
+ }
+ html[dir="rtl"] .pack-tile.is-selected::after { right: auto; left: 10px; }
+ .pack-tile-thumbs {
+ display: flex; gap: 4px;
+ align-items: center;
+ height: 30px;
+ }
+ .pack-tile-thumbs img { width: 26px; height: 26px; object-fit: contain; }
+ .pack-tile-thumbs .thumb-fallback { font-size: 24px; line-height: 1; }
+ .pack-tile-name {
+ font-size: 14px;
+ font-weight: 700;
+ letter-spacing: -0.01em;
+ }
+ .pack-tile-meta {
+ font-size: 11px;
+ color: var(--muted);
+ letter-spacing: 0.02em;
+ }
 
-    header {
-      margin-bottom: 32px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+ /* Range row */
+ .range-row { display: flex; align-items: center; gap: 14px; }
+ .range-value {
+ font-weight: 800;
+ min-width: 44px;
+ font-variant-numeric: tabular-nums;
+ color: var(--accent);
+ }
 
-    header h1 {
-      font-size: 28px;
-      font-weight: 800;
-      margin: 0;
-      letter-spacing: -0.5px;
-    }
+ /* Excluded list area */
+ .rules-list {
+ display: flex; flex-direction: column;
+ gap: 8px;
+ width: 100%;
+ margin-top: 12px;
+ }
+ .rule-item {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 12px;
+ border: 1px solid var(--border);
+ border-radius: var(--radius-md);
+ background: var(--bg-elevated);
+ }
+ .rule-domain { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+ .rule-set { font-size: 12px; color: var(--muted); }
+ .rule-empty {
+ padding: 14px;
+ text-align: center;
+ color: var(--muted);
+ font-size: 13px;
+ border: 1px dashed var(--border);
+ border-radius: var(--radius-md);
+ }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 24px;
-      align-items: start;
-    }
+ /* Backup buttons */
+ .backup-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow);
-    }
+ /* Side */
+ .side { position: sticky; top: 24px; }
+ .side .card { padding: 18px; }
+ .side .preview {
+ padding: 22px;
+ background: var(--surface-2);
+ border-radius: var(--radius-md);
+ border: 1px dashed var(--border);
+ text-align: center;
+ font-size: 24px;
+ line-height: 1.4;
+ min-height: 64px;
+ direction: ltr;
+ }
+ html[dir="rtl"] .side .preview { direction: rtl; }
+ .side .preview img {
+ width: auto; height: 1em;
+ vertical-align: -0.1em;
+ object-fit: contain;
+ margin: 0 1px;
+ }
 
-    .card-title {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--accent);
-    }
+ .all-emojis {
+ max-height: 540px;
+ overflow-y: auto;
+ margin-top: 14px;
+ padding-right: 6px;
+ }
+ .all-emojis h2 {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 0.08em;
+ color: var(--muted);
+ margin: 14px 0 8px;
+ font-weight: 800;
+ }
+ .all-emojis h2:first-child { margin-top: 4px; }
+ .all-emojis-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+ gap: 4px;
+ }
+ .all-emojis-grid div {
+ display: flex; align-items: center; justify-content: center;
+ height: 36px;
+ border-radius: var(--radius-sm);
+ cursor: pointer;
+ transition: background 0.12s;
+ }
+ .all-emojis-grid div:hover { background: var(--accent-soft); }
+ .all-emojis-grid img { width: 22px; height: 22px; object-fit: contain; }
 
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 0;
-      border-top: 1px solid var(--border);
-      gap: 20px;
-    }
-
-    .row:first-of-type {
-      border-top: none;
-      padding-top: 0;
-    }
-
-    .label-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .label {
-      font-weight: 600;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .status {
-      padding: 2px 8px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 500;
-      text-transform: none;
-      letter-spacing: 0;
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: 13px;
-      max-width: 450px;
-    }
-
-    /* Interactive Elements */
-    .lang-toggle,
-    .gh,
-    .btn-secondary,
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--fg);
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-
-    .btn-primary:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-
-    .lang-toggle:hover,
-    .gh:hover,
-    .btn-secondary:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(78, 161, 255, 0.05);
-    }
-
-    .gh svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-    }
-
-    /* Switch */
-    .switch {
-      position: relative;
-      width: 44px;
-      height: 24px;
-      flex-shrink: 0;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      inset: 0;
-      background: var(--border);
-      border-radius: 999px;
-      transition: 0.3s;
-    }
-
-    .slider::before {
-      content: "";
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      left: 3px;
-      top: 3px;
-      background: #fff;
-      border-radius: 50%;
-      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    input:checked+.slider {
-      background: var(--accent);
-    }
-
-    input:checked+.slider::before {
-      transform: translateX(20px);
-    }
-
-    .seg {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 8px;
-      width: 100%;
-    }
-
-    .seg-btn {
-      padding: 10px;
-      font-size: 13px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--fg);
-      cursor: pointer;
-      transition: 0.2s;
-      font-weight: 500;
-    }
-
-    .seg-btn:hover {
-      border-color: var(--accent);
-    }
-
-    .seg-btn.selected {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-      font-weight: 600;
-    }
-
-    /* Inputs */
-    input[type="text"],
-    textarea,
-    select {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--fg);
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input[type="text"]:focus,
-    textarea:focus {
-      border-color: var(--accent);
-    }
-
-    /* Preview */
-    .preview-box {
-      background: var(--bg);
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      border: 1px dashed var(--border);
-    }
-
-    .preview-text {
-      font-size: 32px;
-      margin-bottom: 16px;
-      min-height: 48px;
-    }
-
-    .side {
-      position: sticky;
-      top: 40px;
-    }
-
-    @media (max-width: 920px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .side {
-        position: static;
-      }
-    }
-  </style>
+ .footer-note {
+ margin-top: 30px;
+ text-align: center;
+ color: var(--muted);
+ font-size: 12px;
+ }
+ .footer-note a { color: var(--accent); text-decoration: none; font-weight: 600; }
+ .footer-note a:hover { text-decoration: underline; }
+ </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <img src="icons/icon_48x48.png" width="40" height="40" alt="TrueMoji Icon">
-      <h1 data-i18n="title">TrueMoji</h1>
-    </header>
+ <div class="page">
+ <div class="hero">
+ <div class="hero-brand">
+ <div class="hero-logo"><img src="icons/icon_128x128.png" alt=""></div>
+ <div class="hero-text">
+ <h1 data-i18n="title">TrueMoji</h1>
+ <p data-i18n="tagline">Replace native emojis with beautiful image sets</p>
+ </div>
+ </div>
+ <div class="hero-actions">
+ <button class="tm-btn" id="langToggle">AR</button>
+ <a class="tm-btn" id="rateBtn" target="_blank" href="https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg/reviews">
+ <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
+ <span data-i18n="rateExtension">Rate</span>
+ </a>
+ </div>
+ </div>
 
-    <div class="layout">
-      <div class="main">
-        <!-- General Settings -->
-        <div class="card">
-          <div class="card-title">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path
-                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
-              </path>
-            </svg>
-            <span data-i18n="generalSettings">General Settings</span>
-          </div>
+ <div class="layout">
+ <main class="main">
 
-          <div class="row">
-            <div class="label-group">
-              <div class="label"><span data-i18n="enableLabel">Enable TrueMoji</span> <span class="status"
-                  id="enabledStatus"></span></div>
-              <div class="hint">Toggle the emoji replacement globally.</div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="enabled">
-              <span class="slider"></span>
-            </label>
-          </div>
+ <!-- General -->
+ <section class="card">
+ <div class="card-title">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+ <span data-i18n="generalSettings">General</span>
+ </div>
 
-          <div class="row">
-            <div class="label-group">
-              <div class="label" data-i18n="quickActions">Quick Actions</div>
-              <div class="hint" data-i18n="quickActionsHint">Change language or rate the extension.</div>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button class="lang-toggle" id="langToggle">AR</button>
-              <a class="gh"
-                href="https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg/reviews"
-                target="_blank">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z">
-                  </path>
-                </svg>
-                <span data-i18n="rateExtension">Rate Extension</span>
-              </a>
-            </div>
-          </div>
+ <div class="row">
+ <div class="label-group">
+ <div class="label">
+ <span data-i18n="enableLabel">Enable TrueMoji</span>
+ <span class="tm-pill" id="enabledStatus" data-i18n="statusOn">On</span>
+ </div>
+ <div class="hint" data-i18n="enableHint">Master switch for all emoji replacement.</div>
+ </div>
+ <label class="tm-switch">
+ <input type="checkbox" id="enabled">
+ <span class="slider"></span>
+ </label>
+ </div>
 
-          <div class="row">
-            <div class="label-group">
-              <div class="label"><span data-i18n="autoReloadLabel">Auto reload pages</span> <span class="status"
-                  id="autoReloadStatus"></span></div>
-              <div class="hint" data-i18n="autoReloadHint">Automatically reload open pages when you change settings.
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="autoReload">
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
+ <div class="row">
+ <div class="label-group">
+ <div class="label">
+ <span data-i18n="autoReloadLabel">Auto-reload pages</span>
+ <span class="tm-pill" id="autoReloadStatus" data-i18n="statusOff">Off</span>
+ </div>
+ <div class="hint" data-i18n="autoReloadHint">Refresh open tabs when settings change.</div>
+ </div>
+ <label class="tm-switch">
+ <input type="checkbox" id="autoReload">
+ <span class="slider"></span>
+ </label>
+ </div>
+ </section>
 
-        <!-- Emoji Style -->
-        <div class="card">
-          <div class="card-title">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"></path>
-            </svg>
-            <span data-i18n="emojiStyle">Emoji Style</span>
-          </div>
+ <!-- Pack picker -->
+ <section class="card">
+ <div class="card-title">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+ <circle cx="12" cy="12" r="9"></circle>
+ <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+ <line x1="9" y1="9" x2="9.01" y2="9"></line>
+ <line x1="15" y1="9" x2="15.01" y2="9"></line>
+ </svg>
+ <span data-i18n="emojiStyle">Emoji Pack</span>
+ </div>
 
-          <div class="row" style="flex-direction: column; align-items: flex-start;">
-            <div class="label-group" style="margin-bottom: 12px;">
-              <div class="label"><span data-i18n="setLabel">Image Set</span> <span class="status" id="setStatus"></span>
-              </div>
-              <div class="hint">Choose your preferred emoji design.</div>
-            </div>
-            <div class="seg" id="setSeg">
-              <button class="seg-btn" data-set="apple" data-i18n-set="apple">Apple</button>
-              <button class="seg-btn" data-set="google" data-i18n-set="google">Google</button>
-              <button class="seg-btn" data-set="fluent-color" data-i18n-set="fluent">Fluent (3D)</button>
-              <button class="seg-btn" data-set="twitter" data-i18n-set="twitter">Twitter</button>
-              <button class="seg-btn" data-set="facebook" data-i18n-set="facebook">Facebook</button>
-              <button class="seg-btn" data-set="joypixels" data-i18n-set="joypixels">JoyPixels</button>
-              <button class="seg-btn" data-set="openmoji" data-i18n-set="openmoji">OpenMoji</button>
-              <button class="seg-btn" data-set="system" data-i18n-set="system">System</button>
-            </div>
-          </div>
+ <div class="row is-stacked">
+ <div class="label-group" style="margin-bottom: 12px;">
+ <div class="label">
+ <span data-i18n="setLabel">Image set</span>
+ <span class="tm-pill" id="setStatus"></span>
+ </div>
+ <div class="hint" data-i18n="pickPackHint">Tap a pack to switch instantly.</div>
+ </div>
+ <div class="pack-grid" id="packGrid"></div>
+ </div>
 
-          <div class="row">
-            <div class="label-group">
-              <div class="label"><span data-i18n="strictLabel">Strict set only</span> <span class="status"
-                  id="strictStatus"></span></div>
-              <div class="hint" data-i18n="strictHint">When enabled, TrueMoji uses only the selected image set. Disable
-                to allow fallback.</div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="strict">
-              <span class="slider"></span>
-            </label>
-          </div>
+ <div class="row">
+ <div class="label-group">
+ <div class="label">
+ <span data-i18n="strictLabel">Strict pack mode</span>
+ <span class="tm-pill" id="strictStatus" data-i18n="statusOff">Off</span>
+ </div>
+ <div class="hint" data-i18n="strictHint">Use the selected pack only no fallback.</div>
+ </div>
+ <label class="tm-switch">
+ <input type="checkbox" id="strict">
+ <span class="slider"></span>
+ </label>
+ </div>
 
-          <div class="row">
-            <div class="label-group">
-              <div class="label" data-i18n="emojiSizeLabel">Emoji Size</div>
-              <div class="hint" data-i18n="emojiSizeHint">Adjust the size of the emoji images relative to the text.
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <input type="range" id="emojiSize" min="1.0" max="1.5" step="0.05" value="1.0"
-                style="width: 120px; accent-color: var(--accent);">
-              <span id="emojiSizeValue" style="font-weight: 700; min-width: 40px;">1.0x</span>
-            </div>
-          </div>
-        </div>
+ <div class="row">
+ <div class="label-group">
+ <div class="label" data-i18n="emojiSizeLabel">Emoji size</div>
+ <div class="hint" data-i18n="emojiSizeHint">Scale image emojis from 1.0× to 1.5×.</div>
+ </div>
+ <div class="range-row">
+ <input type="range" id="emojiSize" min="1.0" max="1.5" step="0.05" value="1.0" class="tm-range">
+ <span class="range-value" id="emojiSizeValue">1.0×</span>
+ </div>
+ </div>
+ </section>
 
-        <div class="card">
-          <div class="card-title">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-            <span data-i18n="interactionSettings">Interaction & Shortcuts</span>
-          </div>
+ <!-- Interaction -->
+ <section class="card">
+ <div class="card-title">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+ <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+ <path d="M7 12h.01M11 12h.01M15 12h.01M19 12h.01M5 16h.01M9 16h.01M13 16h.01M17 16h.01"></path>
+ </svg>
+ <span data-i18n="interactionSettings">Interaction</span>
+ </div>
 
-          <div class="row">
-            <div class="label-group">
-              <div class="label" data-i18n="showOriginalLabel">Show original on hover</div>
-              <div class="hint" data-i18n="showOriginalHint">Show the original native emoji when you hover over the
-                replaced image.</div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="showOriginal">
-              <span class="slider"></span>
-            </label>
-          </div>
+ <div class="row">
+ <div class="label-group">
+ <div class="label" data-i18n="showOriginalLabel">Show original on hover</div>
+ <div class="hint" data-i18n="showOriginalHint">Reveal the native emoji on hover.</div>
+ </div>
+ <label class="tm-switch">
+ <input type="checkbox" id="showOriginal">
+ <span class="slider"></span>
+ </label>
+ </div>
 
-          <div class="row" style="flex-direction: column; align-items: flex-start;">
-            <div class="label-group" style="margin-bottom: 12px;">
-              <div class="label" data-i18n="shortcutLabel">Keyboard Shortcut</div>
-              <div class="hint" data-i18n="shortcutHint">Click the input and press your desired key combination to
-                toggle TrueMoji.</div>
-            </div>
-            <div style="display: flex; gap: 8px; width: 100%;">
-              <input type="text" id="shortcutInput" placeholder="Click to record shortcut" readonly
-                data-i18n-placeholder="shortcutPlaceholder">
-              <button id="clearShortcutBtn" title="Clear Shortcut" data-i18n-title="clearShortcut" class="btn-secondary"
-                style="padding: 10px 16px; width: auto; margin-top: 0;">✕</button>
-            </div>
-          </div>
-        </div>
+ <div class="row is-stacked">
+ <div class="label-group" style="margin-bottom: 12px;">
+ <div class="label" data-i18n="shortcutLabel">Toggle shortcut</div>
+ <div class="hint" data-i18n="shortcutHint">Click the field, press a key combination.</div>
+ </div>
+ <div style="display: flex; gap: 8px; width: 100%;">
+ <input type="text" id="shortcutInput" class="tm-input" placeholder="Click and press keys" readonly data-i18n-placeholder="shortcutPlaceholder">
+ <button id="clearShortcutBtn" class="tm-btn" data-i18n-title="clearShortcut" title="Clear">✕</button>
+ </div>
+ </div>
+ </section>
 
-        <div class="card">
-          <div class="card-title">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="9" y1="3" x2="9" y2="21"></line>
-            </svg>
-            <span data-i18n="websiteControl">Website Control</span>
-          </div>
+ <!-- Website rules -->
+ <section class="card">
+ <div class="card-title">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+ <circle cx="12" cy="12" r="10"></circle>
+ <line x1="2" y1="12" x2="22" y2="12"></line>
+ <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+ </svg>
+ <span data-i18n="websiteControl">Website Rules</span>
+ </div>
 
-          <div class="row" style="flex-direction: column; align-items: flex-start;">
-            <div class="label-group" style="margin-bottom: 12px;">
-              <div class="label" data-i18n="excludeListLabel">Excluded Domains</div>
-              <div class="hint" data-i18n="excludeListHint">Enter domains where TrueMoji should be disabled (one per
-                line).</div>
-            </div>
-            <textarea id="excludeList" placeholder="example.com" data-i18n-placeholder="excludePlaceholder"></textarea>
-          </div>
+ <div class="row is-stacked">
+ <div class="label-group" style="margin-bottom: 12px;">
+ <div class="label" data-i18n="excludeListLabel">Excluded domains</div>
+ <div class="hint" data-i18n="excludeListHint">Domains where TrueMoji should stay disabled.</div>
+ </div>
+ <textarea id="excludeList" class="tm-textarea" placeholder="example.com&#10;docs.google.com" data-i18n-placeholder="excludePlaceholder"></textarea>
+ </div>
 
-          <div class="row" style="flex-direction: column; align-items: flex-start;">
-            <div class="label-group" style="margin-bottom: 12px;">
-              <div class="label" data-i18n="customSiteLabel">Per-Site Customization</div>
-              <div class="hint" data-i18n="customSiteHint">Choose a specific emoji set for certain websites.</div>
-            </div>
-            <div style="display: flex; gap: 10px; width: 100%;">
-              <input type="text" id="customDomainInput" placeholder="example.com"
-                data-i18n-placeholder="domainPlaceholder">
-              <select id="customSetSelect" style="width: auto;">
-                <option value="apple">Apple</option>
-                <option value="google">Google</option>
-                <option value="fluent-color">Fluent (3D)</option>
-                <option value="twitter">Twitter</option>
-                <option value="facebook">Facebook</option>
-                <option value="joypixels">JoyPixels</option>
-                <option value="openmoji">OpenMoji</option>
-                <option value="system">System</option>
-              </select>
-              <button id="addRuleBtn" data-i18n="addRule" class="btn-primary">Add Rule</button>
-            </div>
-            <div id="customRulesList"
-              style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 12px;"></div>
-          </div>
-        </div>
+ <div class="row is-stacked">
+ <div class="label-group" style="margin-bottom: 12px;">
+ <div class="label" data-i18n="customSiteLabel">Per-site pack rules</div>
+ <div class="hint" data-i18n="customSiteHint">Force a specific pack on certain sites.</div>
+ </div>
+ <div style="display: flex; gap: 10px; width: 100%; flex-wrap: wrap;">
+ <input type="text" id="customDomainInput" class="tm-input" placeholder="twitter.com" data-i18n-placeholder="domainPlaceholder" style="flex: 1; min-width: 200px;">
+ <select id="customSetSelect" class="tm-select" style="width: auto; min-width: 160px;"></select>
+ <button id="addRuleBtn" class="tm-btn tm-btn-primary" data-i18n="addRule">Add rule</button>
+ </div>
+ <div id="customRulesList" class="rules-list"></div>
+ </div>
+ </section>
 
-        <div class="card" style="border-color: var(--accent); background: rgba(78, 161, 255, 0.03);">
-          <div class="card-title">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-              </path>
-            </svg>
-            <span data-i18n="supportProject">Support Project</span>
-          </div>
-          <button id="supportBtn" class="btn-primary" style="width: 100%; padding: 12px;">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"
-              stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-              </path>
-            </svg>
-            <span data-i18n="supportProject">Support Project</span>
-          </button>
-        </div>
-      </div>
+ <!-- Backup -->
+ <section class="card">
+ <div class="card-title">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+ <polyline points="17 8 12 3 7 8"></polyline>
+ <line x1="12" y1="3" x2="12" y2="15"></line>
+ </svg>
+ <span data-i18n="backupSection">Backup &amp; Restore</span>
+ </div>
 
-      <div class="side">
-        <div class="card">
-          <div class="card-title">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M23 4v6h-6M1 20v-6h6"></path>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-            <span data-i18n="reloadTab">Reload Tab</span>
-          </div>
-          <button id="reloadTab" class="btn-secondary" style="width: 100%; padding: 12px;"
-            data-i18n="reloadTabBtn">Reload Tab</button>
-        </div>
+ <div class="row">
+ <div class="label-group">
+ <div class="label" data-i18n="exportLabel">Export settings</div>
+ <div class="hint" data-i18n="exportHint">Download a JSON file with all your preferences.</div>
+ </div>
+ <button class="tm-btn" id="exportBtn" data-i18n="exportBtn">Download backup</button>
+ </div>
 
-        <div class="card">
-          <div class="card-title">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"></path>
-            </svg>
-            <span data-i18n="preview">Live Preview</span>
-          </div>
-          <button id="toggleTest" class="btn-secondary"
-            style="width: 100%; margin-bottom: 20px; border-color: var(--accent); color: var(--accent);"
-            data-i18n="previewEmojisBtn">Preview
-            Emojis</button>
+ <div class="row">
+ <div class="label-group">
+ <div class="label" data-i18n="importLabel">Import settings</div>
+ <div class="hint" data-i18n="importHint">Restore from a previously exported JSON file.</div>
+ </div>
+ <div class="backup-actions">
+ <input type="file" id="importFile" accept="application/json,.json" style="display:none">
+ <button class="tm-btn" id="importBtn" data-i18n="importBtn">Choose file</button>
+ </div>
+ </div>
 
-          <div class="preview-box">
-            <div class="preview-text">😀 😁 😂 😇 🤓 😈 👽 🤖 💩 👾</div>
-            <div id="testArea"
-              style="display:none; margin-top:20px; border-top:1px solid var(--border); padding-top:20px;"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="i18n.js"></script>
-  <script src="options.js"></script>
+ <div class="row">
+ <div class="label-group">
+ <div class="label" data-i18n="resetLabel">Reset all settings</div>
+ <div class="hint" data-i18n="resetHint">Restore TrueMoji to its first-run state.</div>
+ </div>
+ <button class="tm-btn" id="resetBtn" style="border-color: var(--danger); color: var(--danger);" data-i18n="resetBtn">Reset</button>
+ </div>
+ </section>
+
+ <!-- Support -->
+ <section class="card" style="border-color: var(--brand-300); background: linear-gradient(135deg, rgba(255,184,0,0.08) 0%, rgba(255,149,0,0.04) 100%);">
+ <div class="card-title">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+ </svg>
+ <span data-i18n="supportProject">Support Project</span>
+ </div>
+ <button id="supportBtn" class="tm-btn tm-btn-primary" style="width: 100%; padding: 12px; font-size: 14px;">
+ <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+ </svg>
+ <span data-i18n="supportProject">Support Project</span>
+ </button>
+ </section>
+
+ </main>
+
+ <aside class="side">
+ <div class="card">
+ <div class="card-title">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+ <circle cx="12" cy="12" r="10"></circle>
+ <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"></path>
+ </svg>
+ <span data-i18n="preview">Live Preview</span>
+ </div>
+ <div class="preview" id="previewBox">😀 😎 ❤️ 🔥 👍 🎉 🌟 🚀</div>
+ <button id="toggleAllBtn" class="tm-btn" style="width: 100%; margin-top: 10px;" data-i18n="previewEmojisBtn">Preview all emojis</button>
+ <div id="allEmojis" class="all-emojis tm-scroll" style="display:none;"></div>
+ </div>
+
+ <div class="card">
+ <div class="card-title">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M3 12a9 9 0 1 0 9-9"></path>
+ <polyline points="3 4 3 10 9 10"></polyline>
+ </svg>
+ <span data-i18n="reloadTab">Reload tab</span>
+ </div>
+ <button id="reloadTabBtn" class="tm-btn" style="width: 100%;" data-i18n="reloadTabBtn">Reload current tab</button>
+ </div>
+ </aside>
+ </div>
+
+ <div class="footer-note">
+ <span data-i18n="poweredBy">Built with care</span>
+ &nbsp;·&nbsp;
+ <a href="PRIVACY.html" target="_blank" data-i18n="privacyLink">Privacy</a>
+ </div>
+ </div>
+
+ <div class="tm-toast" id="toast"></div>
+
+ <script src="i18n.js"></script>
+ <script src="packs.js"></script>
+ <script src="options.js"></script>
 </body>
 
 </html>

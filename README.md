@@ -1,9 +1,10 @@
 <div align="center">
-  <img src="icons/icon_128x128.png" width="128" alt="TrueMoji Icon" />
-  <h1>TrueMoji</h1>
+  <img src="screenshots/v2/intro-en.png" width="100%" alt="TrueMoji 2.0" />
+  <br>
 
-  [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-blue?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
-  [![Add to Firefox](https://img.shields.io/badge/Add_to_Firefox-Available_Now-orange?style=for-the-badge&logo=firefox-browser)](https://addons.mozilla.org/en-US/firefox/addon/truemoji/)
+  [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-FFB800?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
+  [![Version](https://img.shields.io/badge/version-2.0.0-2A2F3A?style=for-the-badge)](manifest.json)
+  [![License](https://img.shields.io/badge/license-MIT-FF9F00?style=for-the-badge)](LICENSE)
 
 </div>
 
@@ -11,42 +12,71 @@
   <a href="README_ar.md">🇸🇦 العربية</a>
 </div>
 
-Tired of boring default browser emojis? Or seeing empty squares where flags should be? **TrueMoji is the solution.**
+<br>
 
-TrueMoji replaces native system emojis with beautiful, high-quality image sets like iOS style, Android style, and more. Enjoy a consistent, vibrant, and fully expressive emoji experience on every website you visit.
+Tired of boring default browser emojis? Empty squares where flags should be? **TrueMoji is the solution.**
 
-## See the Difference
-| Before (Default System) | After (TrueMoji - iOS Style) |
-|:-----------------------:|:------------------------------:|
-| <img src="screenshots/flags-before.png" width="100%" /> | <img src="screenshots/flags-after.png" width="100%" /> |
+TrueMoji replaces native system emojis with beautiful, high quality image sets. Apple, Google Noto, Twemoji 15, Microsoft Fluent (3D and Flat), Twitter, Facebook, and OpenMoji. A consistent, vibrant emoji experience on every website you visit.
+
+## See the difference
+
+<table>
+  <tr>
+    <td align="center"><b>Before</b><br>(default system)</td>
+    <td align="center"><b>After</b><br>(TrueMoji 2.0)</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/v2/problem-en.png" width="100%" alt="Before" /></td>
+    <td><img src="screenshots/v2/solution-en.png" width="100%" alt="After" /></td>
+  </tr>
+</table>
+
+## Three pillars
+
+<img src="screenshots/v2/features-en.png" width="100%" alt="Quick switch, Emoji picker, Full control" />
+
+| | |
+|---|---|
+| **Quick switch** | Master toggle, live preview, and a visual pack picker right in the popup. |
+| **Emoji picker** | Search, browse, and copy any emoji in your selected pack's style. Recents and favorites are saved automatically. |
+| **Full control** | Per site rules, excluded domains, keyboard shortcut, settings export and import, and more. |
+
+## What's new in 2.0
+
+* 🎨 Brand new design that matches the TrueMoji logo. Warm gold accents on a deep dark surface, with full light mode support.
+* 📦 Three new emoji packs: **Twemoji 15**, **Google Noto Color**, and **Microsoft Fluent Flat**, alongside the existing Apple, Google, Fluent 3D, Twitter, Facebook, and OpenMoji.
+* 🔍 Built in **emoji picker** with search, categories, recents, and favorites.
+* 💾 **Settings backup and restore** as a JSON file.
+* ⚡ Pinned CDN versions, smarter pack fallback, fewer broken images.
+* 🛠️ First run **onboarding** in three steps: language, pack, and shortcut.
 
 ## Features
-- **Multiple Emoji Sets**: Choose from a variety of popular emoji styles and open-source designs.
-- **Per-Site Customization**: Assign different emoji sets to specific websites (e.g., match the site's style on social media, use iOS style elsewhere).
-- **Excluded Domains**: Disable TrueMoji completely on specific websites.
-- **Keyboard Shortcut**: Toggle the extension on/off instantly with a customizable shortcut.
-- **Show Original on Hover**: Hover over any emoji to see the original native character.
-- **Emoji Size Control**: Adjust the size of emojis from 1.0x to 1.5x.
-- **Strict Mode**: Force use of selected set only.
-- **Auto Reload**: Automatically refresh pages when settings change.
-- **Bilingual**: Fully localized in English and Arabic.
-- **Dark Mode**: Settings interface adapts to your system theme.
 
-## Screenshots
+* Nine image packs plus the system default.
+* Per site rules to auto switch packs on certain domains.
+* Excluded domains for sites you don't want it on.
+* Keyboard shortcut to toggle the extension instantly.
+* Show original on hover.
+* Emoji size control from 1.0× to 1.5×.
+* Strict pack mode (no fallback).
+* Auto reload pages when settings change.
+* Fully bilingual (English and Arabic).
+* Light and dark theme that adapts to your system.
 
-### Quick Settings
-![Quick Settings](screenshots/app_en.png)
+## Install
 
-### Options Page
-![Options Page](screenshots/Options_en.png)
+[Add TrueMoji to Chrome](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg) from the Chrome Web Store.
 
 ## Support
-If you encounter any issues or have suggestions, please open an issue on GitHub:
-[Report an Issue](https://github.com/voidksa/TrueMoji/issues)
+
+If TrueMoji has been useful to you, you can [support the project](https://creators.sa/en/voidksa). It really helps keep development going. 💛
+
+For bug reports, please use the Chrome Web Store reviews or contact the developer through the email listed on the store page.
 
 ## Privacy
-For information on how we handle your data, please review our [Privacy Policy](PRIVACY.md).
+
+TrueMoji does not collect any personal data, telemetry, or analytics. The full Privacy Policy ships inside the extension itself: open the options page and click **Privacy** at the bottom, or open `chrome-extension://[id]/PRIVACY.html` directly after install.
 
 ## License
-This project is licensed under the [MIT License](LICENSE).
-You are free to fork and improve this project, but you must provide appropriate credit to the original author (**voidksa**) and link back to the original repository [voidksa/TrueMoji](https://github.com/voidksa/TrueMoji).
+
+MIT, see [LICENSE](LICENSE). Original author: **voidksa**.

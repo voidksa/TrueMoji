@@ -13,8 +13,6 @@
     "permissions": [
         "storage",
         "tabs",
-        "notifications",
-        "alarms",
         "contextMenus",
         "declarativeNetRequest"
     ],
