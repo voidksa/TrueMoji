@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Welcome to TrueMoji</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,184,0,0.18) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,149,0,0.12) 0%, transparent 50%),
+        var(--bg);
+    }
+    .card-wrap {
+      width: 92%;
+      max-width: 520px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .progress {
+      height: 4px;
+      background: var(--surface-2);
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--gradient-sun);
+      width: 33%;
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .step {
+      padding: 36px 32px 28px;
+      animation: tm-fade-in 0.32s ease-out;
+    }
+    .step-icon {
+      width: 72px; height: 72px;
+      border-radius: 22px;
+      background: var(--gradient-sun);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-glow);
+      margin: 0 auto 20px;
+    }
+    .step-icon img { width: 56px; height: 56px; }
+    .step-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin: 0 0 6px;
+    }
+    .step-body {
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+      margin: 0 0 24px;
+    }
+
+    .lang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .lang-card {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      background: var(--bg-elevated);
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: inherit;
+      color: var(--fg);
+      text-align: center;
+    }
+    .lang-card:hover { border-color: var(--brand-300); transform: translateY(-1px); }
+    .lang-card.is-selected { border-color: var(--accent); background: var(--accent-soft); }
+    .lang-card .flag { font-size: 28px; }
+    .lang-card .name { font-size: 14px; font-weight: 700; margin-top: 4px; }
+
+    .pack-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    .pack-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      background: var(--bg-elevated);
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: inherit;
+      color: var(--fg);
+      text-align: start;
+    }
+    .pack-card:hover { border-color: var(--brand-300); }
+    .pack-card.is-selected { border-color: var(--accent); background: var(--accent-soft); }
+    .pack-card .thumb { width: 32px; display: flex; gap: 2px; align-items: center; }
+    .pack-card .thumb img { width: 16px; height: 16px; object-fit: contain; }
+    .pack-card .name { font-size: 13px; font-weight: 700; }
+
+    .shortcut-input {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 2px dashed var(--border);
+      background: var(--bg-elevated);
+      color: var(--fg);
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      font-family: inherit;
+      letter-spacing: 0.05em;
+    }
+    .shortcut-input:focus { border-color: var(--accent); border-style: solid; box-shadow: 0 0 0 4px var(--accent-soft); }
+
+    .actions {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px 24px;
+      gap: 10px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .actions .btn-skip {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 8px 12px;
+      font-family: inherit;
+    }
+    .actions .btn-skip:hover { color: var(--fg); }
+    .actions .btn-primary { padding: 10px 22px; font-size: 14px; }
+
+    .step-indicator {
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card-wrap">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div class="step" id="step1">
+      <div class="step-icon"><img src="icons/icon_128x128.png" alt=""></div>
+      <div class="step-indicator">1 / 3</div>
+      <h1 class="step-title" data-i18n="welcomeTitle">Welcome to TrueMoji</h1>
+      <p class="step-body" data-i18n="pickLanguage">Choose your language</p>
+      <div class="lang-grid">
+        <button class="lang-card is-selected" data-lang="en">
+          <div class="flag">🇬🇧</div>
+          <div class="name">English</div>
+        </button>
+        <button class="lang-card" data-lang="ar">
+          <div class="flag">🇸🇦</div>
+          <div class="name">العربية</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="step" id="step2" style="display:none;">
+      <div class="step-icon">
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="#1A1300" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+          <line x1="9" y1="9" x2="9.01" y2="9"></line>
+          <line x1="15" y1="9" x2="15.01" y2="9"></line>
+        </svg>
+      </div>
+      <div class="step-indicator">2 / 3</div>
+      <h1 class="step-title" data-i18n="pickPack">Pick your favorite emoji pack</h1>
+      <p class="step-body" data-i18n="pickPackHint">Tap a pack to switch instantly.</p>
+      <div class="pack-list tm-scroll" id="packList"></div>
+    </div>
+
+    <div class="step" id="step3" style="display:none;">
+      <div class="step-icon">
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="#1A1300" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+          <path d="M7 12h.01M11 12h.01M15 12h.01M19 12h.01M5 16h.01M9 16h.01M13 16h.01M17 16h.01"></path>
+        </svg>
+      </div>
+      <div class="step-indicator">3 / 3</div>
+      <h1 class="step-title" data-i18n="pickShortcut">Optional: bind a toggle shortcut</h1>
+      <p class="step-body" data-i18n="shortcutHint">Click the field, then press a key combination.</p>
+      <input type="text" id="shortcutInput" class="shortcut-input" data-i18n-placeholder="shortcutPlaceholder" placeholder="Click and press keys" readonly>
+    </div>
+
+    <div class="actions">
+      <button class="btn-skip" id="backBtn" data-i18n="back" style="visibility: hidden;">Back</button>
+      <button class="tm-btn tm-btn-primary" id="nextBtn">
+        <span data-i18n="next">Next</span>
+        <svg class="tm-rtl-flip" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="packs.js"></script>
+  <script src="onboarding.js"></script>
+</body>
+
+</html>

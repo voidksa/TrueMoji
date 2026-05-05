@@ -1,0 +1,14 @@
+{
+ "appName": {
+ "message": "TrueMoji",
+ "description": "Extension display name."
+ },
+ "appDesc": {
+ "message": "استبدل إيموجي المتصفح الأصلي بمجموعات صور جميلة Apple وGoogle وTwemoji وFluent وغيرها.",
+ "description": "Chrome Web Store description."
+ },
+ "actionTitle": {
+ "message": "TrueMoji تبديل حزمة الإيموجي",
+ "description": "Tooltip on the toolbar icon."
+ }
+}

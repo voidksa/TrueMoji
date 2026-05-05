@@ -1,186 +1,312 @@
-const DEFAULT_ENABLED = true
-const DEFAULT_SET = 'apple'
-const DEFAULT_LANG_KEY = 'en'
-const enabledEl = document.getElementById('enabled')
-const segEl = document.getElementById('setSeg')
-const enabledStatusEl = document.getElementById('enabledStatus')
-const setStatusEl = document.getElementById('setStatus')
-const excludeSiteEl = document.getElementById('excludeSite')
-const excludeSiteRow = document.getElementById('excludeSiteRow')
-const excludeSiteStatusEl = document.getElementById('excludeSiteStatus')
-const openOptionsEl = document.getElementById('openOptions')
-const langToggleEl = document.getElementById('langToggle')
-const checkUpdateBtn = document.getElementById('checkUpdateBtn')
-const supportBtn = document.getElementById('supportBtn')
-let currentLang = DEFAULT_LANG_KEY
+(function () {
+ 'use strict';
 
-function updateEnabledStatus() {
-  const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
-  enabledStatusEl.textContent = enabledEl.checked ? t.statusOn : t.statusOff
-}
-function updateSetStatus(selected) {
-  const s = selected || (segEl.querySelector('.seg-btn.selected')?.dataset.set || DEFAULT_SET)
-  const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
+ var DEFAULT_ENABLED = true;
+ var DEFAULT_SET = 'apple';
+ var DEFAULT_LANG = 'en';
+ var DATASET_CACHE_KEY = 'truemoji_data';
+ var SUPPORT_LINKS = {
+ creators: { en: 'https://creators.sa/en/voidksa', ar: 'https://creators.sa/ar/voidksa' },
+ coffee: { en: 'https://buymeacoffee.com/voidksa', ar: 'https://buymeacoffee.com/voidksa' }
+ };
 
-  // Try to find translation for the set name first (e.g. apple, google)
-  // We can map dataset.set values to keys in TRANSLATIONS
-  let setName = s.charAt(0).toUpperCase() + s.slice(1)
+ var Packs = window.TrueMojiPacks;
+ var els = {
+ enabled: document.getElementById('enabled'),
+ masterCard: document.getElementById('masterCard'),
+ masterSub: document.getElementById('masterSub'),
+ previewCard: document.getElementById('previewCard'),
+ previewText: document.getElementById('previewText'),
+ previewPackPill: document.getElementById('previewPackPill'),
+ packGrid: document.getElementById('packGrid'),
+ packCount: document.getElementById('packCount'),
+ siteRow: document.getElementById('siteRow'),
+ siteHost: document.getElementById('siteHost'),
+ excludeSite: document.getElementById('excludeSite'),
+ langToggle: document.getElementById('langToggle'),
+ openOptions: document.getElementById('openOptionsBtn'),
+ openPicker: document.getElementById('openPickerBtn'),
+ openPicker2: document.getElementById('openPickerBtn2'),
+ supportCreatorsBtn: document.getElementById('supportCreatorsBtn'),
+ supportCoffeeBtn: document.getElementById('supportCoffeeBtn')
+ };
 
-  // Mapping logic
-  const map = {
-    'apple': 'apple',
-    'google': 'google',
-    'system': 'system',
-    'fluent-color': 'fluent',
-    'joypixels': 'joypixels',
-    'openmoji': 'openmoji',
-    'twitter': 'twitter',
-    'facebook': 'facebook'
-  }
+ var state = {
+ lang: DEFAULT_LANG,
+ enabled: DEFAULT_ENABLED,
+ set: DEFAULT_SET,
+ dataset: null
+ };
 
-  if (map[s] && t[map[s]]) {
-    setName = t[map[s]]
-  }
+ function tr(key) {
+ return (TRANSLATIONS[state.lang] || TRANSLATIONS.en)[key] || key;
+ }
 
-  setStatusEl.textContent = setName
-}
+ function renderPackGrid() {
+ els.packGrid.innerHTML = '';
+ var visible = Packs.PACKS.filter(function (p) { return p.id !== 'system' || true; });
+ visible.forEach(function (pack) {
+ var btn = document.createElement('button');
+ btn.className = 'pack' + (pack.id === state.set ? ' is-selected' : '');
+ btn.dataset.set = pack.id;
 
-function updateExcludeSiteStatus() {
-  const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
-  if (excludeSiteStatusEl && excludeSiteEl) {
-    // When checked, it means "Disabled on this site", so status is On (feature is active)
-    // Or users might interpret it as "Site is Excluded: Yes/No"
-    // Let's stick to On/Off for the toggle state itself.
-    // If toggle is ON -> Exclude is ON -> "On"
-    excludeSiteStatusEl.textContent = excludeSiteEl.checked ? t.statusOn : t.statusOff
-  }
-}
+ var thumbs = document.createElement('div');
+ thumbs.className = 'pack-thumbs';
 
-function updateLangToggle() {
-  langToggleEl.textContent = currentLang === 'en' ? 'AR' : 'EN'
-}
+ if (pack.id === 'system') {
+ var span = document.createElement('span');
+ span.className = 'thumb-fallback';
+ span.textContent = '😀😎';
+ thumbs.appendChild(span);
+ } else {
+ var samples = (pack.preview || []).slice(0, 2);
+ samples.forEach(function (uni) {
+ var entry = state.dataset ? state.dataset.byUnified[uni.toUpperCase()] : null;
+ var image = entry ? entry.image : null;
+ var url = Packs.urlFor(pack.id, uni.toUpperCase(), image);
+ if (!url) return;
+ var img = document.createElement('img');
+ img.src = url;
+ img.alt = '';
+ img.onerror = function () { img.style.visibility = 'hidden'; };
+ thumbs.appendChild(img);
+ });
+ if (!thumbs.children.length) {
+ var fb = document.createElement('span');
+ fb.className = 'thumb-fallback';
+ fb.textContent = '✨';
+ thumbs.appendChild(fb);
+ }
+ }
 
-chrome.storage.sync.get({ enabled: DEFAULT_ENABLED, set: DEFAULT_SET, lang: DEFAULT_LANG_KEY, excludedDomains: '' }, v => {
-  currentLang = v.lang || DEFAULT_LANG_KEY
-  applyLanguage(currentLang)
-  updateLangToggle()
+ var name = document.createElement('span');
+ name.className = 'pack-name';
+ name.textContent = (TRANSLATIONS[state.lang] && TRANSLATIONS[state.lang][pack.id]) || pack.label;
 
-  enabledEl.checked = !!v.enabled
-  updateEnabledStatus()
-  const current = String(v.set || DEFAULT_SET)
-  for (const b of segEl.querySelectorAll('.seg-btn')) {
-    b.classList.toggle('selected', b.dataset.set === current)
-  }
-  updateSetStatus(current)
+ btn.appendChild(thumbs);
+ btn.appendChild(name);
+ btn.addEventListener('click', function () { selectPack(pack.id); });
+ els.packGrid.appendChild(btn);
+ });
 
-  if (supportBtn) {
-    supportBtn.addEventListener('click', () => {
-      const url = currentLang === 'ar' ? 'https://creators.sa/ar/voidksa' : 'https://creators.sa/en/voidksa'
-      chrome.tabs.create({ url })
-    })
-  }
+ els.packCount.textContent = (Packs.PACKS.length - 1) + ' ' + tr('packCountSuffix');
+ }
 
-  // Set initial text for support button if not covered by updateUI
-  const t = TRANSLATIONS[currentLang] || TRANSLATIONS['en']
-  if (supportBtn) {
-    const span = supportBtn.querySelector('span')
-    if (span) span.textContent = t.supportProject
-  }
-})
+ function selectPack(id) {
+ state.set = Packs.migratePack(id);
+ chrome.storage.sync.set({ set: state.set });
+ Array.prototype.forEach.call(els.packGrid.querySelectorAll('.pack'), function (b) {
+ b.classList.toggle('is-selected', b.dataset.set === state.set);
+ });
+ updatePreviewPill();
+ renderPreview();
+ }
 
-// Clear update badge when popup is opened
-chrome.action.setBadgeText({ text: '' })
+ var EMOJI_PATTERN = /(\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:[\u{1F3FB}-\u{1F3FF}](?:\uFE0F|\uFE0E)?)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:[\u{1F3FB}-\u{1F3FF}](?:\uFE0F|\uFE0E)?)?)*|[\u{1F1E6}-\u{1F1FF}]{2})/gu;
 
-enabledEl.addEventListener('change', () => {
-  updateEnabledStatus()
-  chrome.storage.sync.set({ enabled: enabledEl.checked })
-})
+ function renderPreview() {
+ var text = tr('sampleSentence');
+ els.previewText.innerHTML = '';
+ if (!state.enabled || state.set === 'system' || !state.dataset) {
+ els.previewText.textContent = text;
+ return;
+ }
+ var lastIndex = 0;
+ var m;
+ EMOJI_PATTERN.lastIndex = 0;
+ while ((m = EMOJI_PATTERN.exec(text))) {
+ if (m.index > lastIndex) {
+ els.previewText.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
+ }
+ var token = m[0];
+ var uni = Packs.unifiedFromChars(token);
+ var entry = state.dataset.byUnified[uni] || state.dataset.byUnified[uni.replace(/-FE0F/g, '')] || null;
+ var canonical = entry ? entry.unified : uni;
+ var image = entry ? entry.image : null;
+ var url = Packs.urlFor(state.set, canonical, image);
+ if (url) {
+ var img = document.createElement('img');
+ img.src = url;
+ img.alt = token;
+ img.onerror = function () {
+ var t = document.createTextNode(this.alt);
+ this.replaceWith(t);
+ };
+ els.previewText.appendChild(img);
+ } else {
+ els.previewText.appendChild(document.createTextNode(token));
+ }
+ lastIndex = m.index + token.length;
+ }
+ if (lastIndex < text.length) {
+ els.previewText.appendChild(document.createTextNode(text.slice(lastIndex)));
+ }
+ }
 
-langToggleEl.addEventListener('click', () => {
-  currentLang = currentLang === 'en' ? 'ar' : 'en'
-  chrome.storage.sync.set({ lang: currentLang })
-  applyLanguage(currentLang)
-  updateLangToggle()
-  updateEnabledStatus()
-  updateSetStatus()
-  updateExcludeSiteStatus()
-})
+ function updatePreviewPill() {
+ var pack = Packs.packById(state.set);
+ var label = (TRANSLATIONS[state.lang] && TRANSLATIONS[state.lang][pack.id]) || pack.shortLabel || pack.label;
+ els.previewPackPill.textContent = label;
+ }
 
-segEl.addEventListener('click', e => {
-  const b = e.target.closest('.seg-btn')
-  if (!b) return
-  for (const c of segEl.querySelectorAll('.seg-btn')) c.classList.remove('selected')
-  b.classList.add('selected')
-  const selected = String(b.dataset.set || DEFAULT_SET)
-  updateSetStatus(selected)
-  chrome.storage.sync.set({ set: selected })
-})
+ function refreshMasterCard() {
+ els.masterCard.classList.toggle('is-on', !!state.enabled);
+ }
 
-chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'sync') {
-    if (changes.lang) {
-      currentLang = changes.lang.newValue
-      applyLanguage(currentLang)
-      updateLangToggle()
-      updateEnabledStatus()
-      updateSetStatus()
-      updateExcludeSiteStatus()
-    }
-    if (changes.enabled) {
-      enabledEl.checked = !!changes.enabled.newValue
-      updateEnabledStatus()
-    }
-    if (changes.set) {
-      const newSet = changes.set.newValue || DEFAULT_SET
-      const buttons = segEl.querySelectorAll('.seg-btn')
-      buttons.forEach(b => {
-        b.classList.toggle('selected', b.dataset.set === newSet)
-      })
-      updateSetStatus(newSet)
-    }
-  }
-})
+ function openSupport(kind) {
+ var links = SUPPORT_LINKS[kind] || SUPPORT_LINKS.creators;
+ chrome.tabs.create({ url: links[state.lang] || links.en });
+ }
 
-openOptionsEl.addEventListener('click', () => {
-  if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage()
-})
+ function loadDatasetForPreview() {
+ chrome.storage.local.get([DATASET_CACHE_KEY], function (res) {
+ var arr = res[DATASET_CACHE_KEY];
+ if (Array.isArray(arr) && arr.length) {
+ state.dataset = indexDataset(arr);
+ renderPackGrid();
+ renderPreview();
+ return;
+ }
+ fetch(Packs.DATA_URL).then(function (r) { return r.json(); }).then(function (a) {
+ state.dataset = indexDataset(a);
+ renderPackGrid();
+ renderPreview();
+ }).catch(function () {
+ renderPackGrid();
+ renderPreview();
+ });
+ });
+ }
 
-// Exclude site logic
-chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-  const tab = tabs[0]
-  if (!tab || !tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('edge://')) return
+ function indexDataset(arr) {
+ var byUnified = {};
+ arr.forEach(function (e) {
+ if (e.unified) byUnified[e.unified] = { image: e.image, unified: e.unified };
+ if (e.non_qualified) byUnified[e.non_qualified] = { image: e.image, unified: e.unified };
+ if (e.skin_variations) {
+ for (var k in e.skin_variations) {
+ var v = e.skin_variations[k];
+ if (v.unified) byUnified[v.unified] = { image: v.image, unified: v.unified };
+ }
+ }
+ });
+ return { byUnified: byUnified };
+ }
 
-  let domain
-  try {
-    const url = new URL(tab.url)
-    if (!url.protocol.startsWith('http')) return
-    domain = url.hostname.replace(/^www\./, '')
-  } catch (e) {
-    return
-  }
+ function setupSiteRow() {
+ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+ var tab = tabs && tabs[0];
+ if (!tab || !tab.url) return;
+ try {
+ var u = new URL(tab.url);
+ if (!u.protocol.startsWith('http')) return;
+ var domain = u.hostname.replace(/^www\./, '');
+ els.siteRow.style.display = 'flex';
+ els.siteHost.textContent = domain;
+ chrome.storage.sync.get({ excludedDomains: '' }, function (v) {
+ var list = (v.excludedDomains || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+ els.excludeSite.checked = list.indexOf(domain) !== -1;
+ els.excludeSite.addEventListener('change', function () {
+ chrome.storage.sync.get({ excludedDomains: '' }, function (cur) {
+ var lines = (cur.excludedDomains || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+ if (els.excludeSite.checked) {
+ if (lines.indexOf(domain) === -1) lines.push(domain);
+ } else {
+ lines = lines.filter(function (l) { return l !== domain; });
+ }
+ chrome.storage.sync.set({ excludedDomains: lines.join('\n') });
+ });
+ });
+ });
+ } catch (e) {}
+ });
+ }
 
-  const row = document.getElementById('excludeSiteRow')
-  const cb = document.getElementById('excludeSite')
-  if (!row || !cb) return
+ function applyAllText() {
+ applyLanguage(state.lang);
+ els.langToggle.textContent = state.lang === 'en' ? 'AR' : 'EN';
+ updatePreviewPill();
+ if (els.packCount) els.packCount.textContent = (Packs.PACKS.length - 1) + ' ' + tr('packCountSuffix');
+ }
 
-  row.style.display = 'flex'
+ function init() {
+ chrome.storage.sync.get({
+ enabled: DEFAULT_ENABLED,
+ set: DEFAULT_SET,
+ lang: DEFAULT_LANG,
+ excludedDomains: ''
+ }, function (v) {
+ state.lang = v.lang || DEFAULT_LANG;
+ state.enabled = !!v.enabled;
+ state.set = Packs.migratePack(v.set);
 
-  chrome.storage.sync.get({ excludedDomains: '' }, v => {
-    const lines = v.excludedDomains.split('\n').map(s => s.trim()).filter(Boolean)
-    cb.checked = lines.includes(domain)
-    updateExcludeSiteStatus()
+ if (state.set !== v.set) chrome.storage.sync.set({ set: state.set });
 
-    cb.addEventListener('change', () => {
-      updateExcludeSiteStatus()
-      chrome.storage.sync.get({ excludedDomains: '' }, current => {
-        let curLines = current.excludedDomains.split('\n').map(s => s.trim()).filter(Boolean)
-        if (cb.checked) {
-          if (!curLines.includes(domain)) curLines.push(domain)
-        } else {
-          curLines = curLines.filter(l => l !== domain)
-        }
-        chrome.storage.sync.set({ excludedDomains: curLines.join('\n') })
-      })
-    })
-  })
-})
+ els.enabled.checked = state.enabled;
+ refreshMasterCard();
+ applyAllText();
+ loadDatasetForPreview();
+ setupSiteRow();
+ });
+
+ chrome.action.setBadgeText({ text: '' });
+
+ els.enabled.addEventListener('change', function () {
+ state.enabled = els.enabled.checked;
+ refreshMasterCard();
+ chrome.storage.sync.set({ enabled: state.enabled });
+ renderPreview();
+ });
+
+ els.langToggle.addEventListener('click', function () {
+ state.lang = state.lang === 'en' ? 'ar' : 'en';
+ chrome.storage.sync.set({ lang: state.lang });
+ applyAllText();
+ renderPackGrid();
+ renderPreview();
+ });
+
+ els.openOptions.addEventListener('click', function () {
+ if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();
+ });
+ var openPicker = function () {
+ chrome.tabs.create({ url: chrome.runtime.getURL('picker.html') });
+ window.close();
+ };
+ els.openPicker.addEventListener('click', openPicker);
+ els.openPicker2.addEventListener('click', openPicker);
+
+ els.supportCreatorsBtn.addEventListener('click', function () { openSupport('creators'); });
+ els.supportCoffeeBtn.addEventListener('click', function () { openSupport('coffee'); });
+
+ chrome.storage.onChanged.addListener(function (changes, area) {
+ if (area !== 'sync') return;
+ if (changes.lang) {
+ state.lang = changes.lang.newValue || DEFAULT_LANG;
+ applyAllText();
+ renderPackGrid();
+ renderPreview();
+ }
+ if (changes.enabled) {
+ state.enabled = !!changes.enabled.newValue;
+ els.enabled.checked = state.enabled;
+ refreshMasterCard();
+ renderPreview();
+ }
+ if (changes.set) {
+ state.set = Packs.migratePack(changes.set.newValue);
+ Array.prototype.forEach.call(els.packGrid.querySelectorAll('.pack'), function (b) {
+ b.classList.toggle('is-selected', b.dataset.set === state.set);
+ });
+ updatePreviewPill();
+ renderPreview();
+ }
+ });
+ }
+
+ if (document.readyState === 'loading') {
+ document.addEventListener('DOMContentLoaded', init);
+ } else {
+ init();
+ }
+})();

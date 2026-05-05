@@ -1,8 +1,3 @@
-/* TrueMoji v2 — Privacy page controller.
- * Same pattern as options.js: read lang from chrome.storage.sync, apply via
- * the shared applyLanguage() helper from i18n.js, listen for live changes,
- * write back when the toggle is clicked.
- */
 (function () {
   'use strict';
 

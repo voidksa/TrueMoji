@@ -1,15 +1,9 @@
-/* TrueMoji v2 UI translations.
- * applyLanguage() walks data-i18n / data-i18n-title / data-i18n-placeholder
- * attributes and swaps text/title/placeholder for the active language.
- */
 const TRANSLATIONS = {
  en: {
- /* Brand */
  title: "TrueMoji",
  tagline: "Replace native emojis with beautiful image sets",
- versionPill: "v2.0",
+ versionPill: "v2.0.1",
 
- /* Common */
  statusOn: "On",
  statusOff: "Off",
  cancel: "Cancel",
@@ -25,10 +19,14 @@ const TRANSLATIONS = {
  settingsTitle: "TrueMoji Settings",
  rateExtension: "Rate on Chrome Web Store",
  supportProject: "Support Project",
+ supportTitle: "Support continued updates",
+ supportShort: "Updates take time. Your support helps keep compatibility fixes and emoji improvements moving.",
+ supportBody: "TrueMoji is maintained in spare development time. Your support helps keep compatibility fixes and new emoji improvements moving.",
+ supportCreators: "Creators",
+ supportCoffee: "Buy Me a Coffee",
  poweredBy: "Built with care",
  privacyLink: "Privacy",
 
- /* Sections */
  generalSettings: "General",
  emojiStyle: "Emoji Pack",
  interactionSettings: "Interaction",
@@ -36,7 +34,6 @@ const TRANSLATIONS = {
  advancedSettings: "Advanced",
  backupSection: "Backup & Restore",
 
- /* Toggles */
  enableLabel: "Enable TrueMoji",
  enableHint: "Master switch for all emoji replacement.",
  autoReloadLabel: "Auto-reload pages",
@@ -47,7 +44,6 @@ const TRANSLATIONS = {
  showOriginalHint: "Reveal the native emoji when hovering over a replaced image.",
  excludeSite: "Disable on this site",
 
- /* Pack picker */
  setLabel: "Image set",
  pickPackHint: "Tap a pack to switch instantly.",
  livePreviewLabel: "Live preview",
@@ -56,17 +52,14 @@ const TRANSLATIONS = {
  loadMore: "Load more",
  packCountSuffix: "packs",
 
- /* Emoji size */
  emojiSizeLabel: "Emoji size",
  emojiSizeHint: "Scale image emojis from 1.0× to 1.5× the surrounding text.",
 
- /* Shortcut */
  shortcutLabel: "Toggle shortcut",
  shortcutHint: "Click the field, then press a key combination to toggle TrueMoji on or off.",
  shortcutPlaceholder: "Click and press keys",
  clearShortcut: "Clear shortcut",
 
- /* Domains */
  excludeListLabel: "Excluded domains",
  excludeListHint: "Domains where TrueMoji should stay disabled (one per line).",
  excludePlaceholder: "example.com\ndocs.google.com",
@@ -77,7 +70,6 @@ const TRANSLATIONS = {
  removeRule: "Remove",
  noCustomRules: "No custom rules yet.",
 
- /* Backup */
  exportLabel: "Export settings",
  exportHint: "Download a JSON file with all your TrueMoji preferences.",
  exportBtn: "Download backup",
@@ -91,7 +83,6 @@ const TRANSLATIONS = {
  resetBtn: "Reset",
  resetConfirm: "Reset all settings to defaults? This cannot be undone.",
 
- /* Picker */
  pickerTitle: "Emoji Picker",
  pickerSearchPlaceholder: "Search emojis…",
  pickerNoResults: "No emojis match that search.",
@@ -109,7 +100,6 @@ const TRANSLATIONS = {
  catSymbols: "Symbols",
  catFlags: "Flags",
 
- /* Pack labels */
  apple: "Apple",
  google: "Google",
  fluent: "Fluent 3D",
@@ -121,7 +111,6 @@ const TRANSLATIONS = {
  openmoji: "OpenMoji",
  system: "System",
 
- /* Onboarding */
  welcomeTitle: "Welcome to TrueMoji",
  welcomeBody: "A quick three-step tour and you're set.",
  pickLanguage: "Choose your language",
@@ -129,11 +118,16 @@ const TRANSLATIONS = {
  pickShortcut: "Optional: bind a toggle shortcut",
  finish: "Get started",
 
- /* Changelog */
+ whatsNewTitle: "TrueMoji 2.0.1 What's new",
  whatsNew: "What's new",
- whatsNewBody: "TrueMoji 2.0 brings a fresh look, three new emoji packs, an emoji picker, settings backup, and a faster engine.",
+ whatsNewBody: "TrueMoji 2.0.1 focuses on NotebookLM support, cleaner text fields, and better coverage on dynamic websites.",
+ changelogNotebookTitle: "NotebookLM support",
+ changelogNotebookBody: "TrueMoji now works better inside NotebookLM quizzes, flashcards, and delayed Shadow DOM areas.",
+ changelogFieldsTitle: "Cleaner text fields",
+ changelogFieldsBody: "Editable fields now keep native input behavior, preventing duplicate emojis and overlapping text.",
+ changelogDynamicTitle: "Better dynamic page coverage",
+ changelogDynamicBody: "TrueMoji watches late text updates more reliably and uses a fallback path for strict website image policies.",
 
- /* Misc */
  reloadTab: "Reload tab",
  reloadTabBtn: "Reload current tab",
  quickActions: "Quick actions",
@@ -142,10 +136,9 @@ const TRANSLATIONS = {
  preview: "Live Preview",
  sampleSentence: "Hi 👋 click any pack to see the difference 🔥 ✨ 😎",
 
- /* Privacy page */
  privacyEyebrow: "Legal",
  privacyTitle: "Privacy Policy",
- privacyVersion: "Version 2.0.0",
+ privacyVersion: "Version 2.0.1",
  privacyLastUpdated: "Last updated: April 2026",
  privacyKeypoint: "TrueMoji does not collect, store, share, or sell any personal information. No telemetry, no analytics, no tracking. Ever.",
  privacyHData: "Data Collection",
@@ -177,7 +170,7 @@ const TRANSLATIONS = {
  ar: {
  title: "TrueMoji",
  tagline: "استبدل الإيموجي الأصلي بصور عالية الجودة",
- versionPill: "v2.0",
+ versionPill: "v2.0.1",
 
  statusOn: "مفعل",
  statusOff: "معطل",
@@ -194,6 +187,11 @@ const TRANSLATIONS = {
  settingsTitle: "إعدادات TrueMoji",
  rateExtension: "قيّم الإضافة في سوق كروم",
  supportProject: "ادعم المشروع",
+ supportTitle: "ادعم استمرار التحديثات",
+ supportShort: "التحديثات تحتاج وقت. دعمك يساعد على استمرار إصلاحات التوافق وتحسينات الإيموجي.",
+ supportBody: "يتم تطوير TrueMoji في وقت التطوير المتاح. دعمك يساعد على استمرار إصلاحات التوافق وتحسينات الإيموجي الجديدة.",
+ supportCreators: "Creators",
+ supportCoffee: "Buy Me a Coffee",
  poweredBy: "صُنع باهتمام",
  privacyLink: "الخصوصية",
 
@@ -288,8 +286,15 @@ const TRANSLATIONS = {
  pickShortcut: "اختياري: اربط اختصار للتبديل",
  finish: "ابدأ",
 
+ whatsNewTitle: "الجديد في TrueMoji 2.0.1",
  whatsNew: "الجديد",
- whatsNewBody: "TrueMoji 2.0 يجي بتصميم جديد، ثلاث حزم إيموجي جديدة، متصفح إيموجي، نسخ احتياطي للإعدادات، ومحرك أسرع.",
+ whatsNewBody: "TrueMoji 2.0.1 يركز على دعم NotebookLM، إصلاح حقول النص، وتحسين العمل داخل المواقع الديناميكية.",
+ changelogNotebookTitle: "دعم NotebookLM",
+ changelogNotebookBody: "TrueMoji يعمل الآن بشكل أفضل داخل اختبارات NotebookLM، البطاقات التعليمية، وأجزاء Shadow DOM التي تظهر متأخرة.",
+ changelogFieldsTitle: "حقول نص أنظف",
+ changelogFieldsBody: "حقول الكتابة تبقى بسلوكها الأصلي الآن، وهذا يمنع تكرار الإيموجيات وتداخلها مع النص.",
+ changelogDynamicTitle: "تغطية أفضل للمواقع الديناميكية",
+ changelogDynamicBody: "TrueMoji يتابع تحديثات النص المتأخرة بشكل أفضل ويستخدم مساراً احتياطياً للمواقع التي تمنع تحميل الصور بسياسات صارمة.",
 
  reloadTab: "إعادة تحميل",
  reloadTabBtn: "إعادة تحميل التبويب",
@@ -299,10 +304,9 @@ const TRANSLATIONS = {
  preview: "معاينة فورية",
  sampleSentence: "هلا 👋 جرب تنقر أي حزمة 😎 وشف الفرق 🔥 ✨",
 
- /* Privacy page */
  privacyEyebrow: "قانوني",
  privacyTitle: "سياسة الخصوصية",
- privacyVersion: "الإصدار 2.0.0",
+ privacyVersion: "الإصدار 2.0.1",
  privacyLastUpdated: "آخر تحديث: أبريل 2026",
  privacyKeypoint: "TrueMoji لا يجمع، لا يخزّن، لا يشارك، ولا يبيع أي معلومات شخصية. ما في تتبع، ما في تحليلات، ما في إحصاءات. أبداً.",
  privacyHData: "جمع البيانات",

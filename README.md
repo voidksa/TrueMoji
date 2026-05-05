@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="screenshots/v2/cws-1-hero-en.png" width="100%" alt="TrueMoji 2.0" />
+  <img src="screenshots/app_en.png" width="100%" alt="TrueMoji 2.0" />
   <br>
 
   [![Add to Chrome](https://img.shields.io/badge/Add_to_Chrome-Available_Now-FFB800?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/truemoji/elcfpmpgobljibnhecmkmpgdmljdfbbg)
-  [![Version](https://img.shields.io/badge/version-2.0.0-2A2F3A?style=for-the-badge)](manifest.json)
+  [![Version](https://img.shields.io/badge/version-2.0.1-2A2F3A?style=for-the-badge)](manifest.json)
   [![License](https://img.shields.io/badge/license-MIT-FF9F00?style=for-the-badge)](LICENSE)
 
 </div>
@@ -20,24 +20,34 @@ TrueMoji replaces native system emojis with beautiful, high quality image sets. 
 
 ## See the difference
 
-<img src="screenshots/v2/cws-5-compare-en.png" width="100%" alt="Before and after comparison" />
+<table>
+  <tr>
+    <td align="center"><b>Before</b><br>(default system)</td>
+    <td align="center"><b>After</b><br>(TrueMoji 2.0)</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/flags-before.png" width="100%" alt="Before" /></td>
+    <td><img src="screenshots/flags-after.png" width="100%" alt="After" /></td>
+  </tr>
+</table>
 
-## Styles
+## Three pillars
 
-<img src="screenshots/v2/cws-2-styles-en.png" width="100%" alt="Emoji style packs" />
+<img src="screenshots/Options_en.png" width="100%" alt="Quick switch, Emoji picker, Full control" />
 
-## Built-in picker
+| | |
+|---|---|
+| **Quick switch** | Master toggle, live preview, and a visual pack picker right in the popup. |
+| **Emoji picker** | Search, browse, and copy any emoji in your selected pack's style. Recents and favorites are saved automatically. |
+| **Full control** | Per site rules, excluded domains, keyboard shortcut, settings export and import, and more. |
 
-<img src="screenshots/v2/cws-3-picker-en.png" width="100%" alt="Built-in emoji picker" />
+## What's new in 2.0.1
 
-## What's new in 2.0
-
-* 🎨 Brand new design that matches the TrueMoji logo. Warm gold accents on a deep dark surface, with full light mode support.
-* 📦 Three new emoji packs: **Twemoji 15**, **Google Noto Color**, and **Microsoft Fluent Flat**, alongside the existing Apple, Google, Fluent 3D, Twitter, Facebook, and OpenMoji.
-* 🔍 Built in **emoji picker** with search, categories, recents, and favorites.
-* 💾 **Settings backup and restore** as a JSON file.
-* ⚡ Pinned CDN versions, smarter pack fallback, fewer broken images.
-* 🛠️ First run **onboarding** in three steps: language, pack, and shortcut.
+* 📓 NotebookLM compatibility for quizzes, flashcards, and delayed Shadow DOM surfaces.
+* ✍️ Cleaner editable text fields to avoid duplicate emojis and overlapping input text.
+* 🌐 Better coverage for dynamic websites that update text after the page loads.
+* 🛡️ Improved image fallback behavior for websites with strict loading policies.
+* 📝 The release notes page now appears on first install and whenever a new version is installed.
 
 ## Features
 
@@ -58,7 +68,7 @@ TrueMoji replaces native system emojis with beautiful, high quality image sets. 
 
 ## Support
 
-If TrueMoji has been useful to you, you can [support the project](https://creators.sa/en/voidksa). It really helps keep development going. 💛
+TrueMoji updates take time to test across real websites. If it has been useful to you, support through [Creators](https://creators.sa/en/voidksa) or [Buy Me a Coffee](https://buymeacoffee.com/voidksa) helps keep compatibility fixes and emoji improvements moving.
 
 For bug reports, please use the Chrome Web Store reviews or contact the developer through the email listed on the store page.
 
