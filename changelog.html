@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+ <meta charset="utf-8">
+ <title data-i18n="whatsNewTitle">TrueMoji 2.0.1 What's new</title>
+ <link rel="stylesheet" href="theme.css">
+ <style>
+ body {
+ min-height: 100vh;
+ display: flex; align-items: center; justify-content: center;
+ background:
+ radial-gradient(circle at 20% 20%, rgba(255,184,0,0.18) 0%, transparent 50%),
+ radial-gradient(circle at 80% 80%, rgba(255,149,0,0.12) 0%, transparent 50%),
+ var(--bg);
+ }
+ .wrap {
+ width: 92%;
+ max-width: 600px;
+ background: var(--card);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-xl);
+ box-shadow: var(--shadow-lg);
+ padding: 36px 36px 28px;
+ animation: tm-fade-in 0.32s ease-out;
+ }
+ .hero-icon {
+ width: 80px; height: 80px;
+ border-radius: 22px;
+ background: var(--gradient-sun);
+ display: flex; align-items: center; justify-content: center;
+ box-shadow: var(--shadow-glow);
+ margin: 0 auto 20px;
+ }
+ .hero-icon img { width: 64px; height: 64px; }
+ h1 {
+ text-align: center;
+ font-size: 26px;
+ font-weight: 800;
+ letter-spacing: -0.03em;
+ margin: 0 0 6px;
+ }
+ .ver-pill {
+ display: inline-block;
+ padding: 3px 10px;
+ background: var(--accent-soft);
+ color: var(--accent);
+ border-radius: var(--radius-pill);
+ font-size: 11px;
+ font-weight: 800;
+ letter-spacing: 0.06em;
+ }
+ .center { text-align: center; margin-bottom: 26px; }
+
+ ul.features {
+ list-style: none;
+ padding: 0;
+ margin: 0 0 24px;
+ }
+ ul.features li {
+ display: flex; gap: 12px; align-items: flex-start;
+ padding: 12px 0;
+ border-bottom: 1px solid var(--border);
+ }
+ ul.features li:last-child { border-bottom: none; }
+ ul.features .ico {
+ width: 36px; height: 36px;
+ flex-shrink: 0;
+ border-radius: 10px;
+ background: var(--accent-soft);
+ color: var(--accent);
+ display: flex; align-items: center; justify-content: center;
+ font-size: 18px;
+ }
+ ul.features .text { flex: 1; }
+ ul.features h3 { margin: 0 0 2px; font-size: 14px; font-weight: 700; }
+ ul.features p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+ .actions {
+ display: flex;
+ justify-content: center;
+ gap: 8px;
+ }
+ .actions .tm-btn-primary { padding: 11px 24px; font-size: 14px; }
+ </style>
+</head>
+
+<body>
+ <div class="wrap">
+ <div class="hero-icon"><img src="icons/icon_128x128.png" alt=""></div>
+ <div class="center">
+ <span class="ver-pill" data-i18n="versionPill">v2.0.1</span>
+ </div>
+ <h1 data-i18n="whatsNew">What's new</h1>
+ <p class="center" style="color: var(--muted); font-size: 14px;" data-i18n="whatsNewBody">
+ TrueMoji 2.0.1 adds NotebookLM compatibility on top of the TrueMoji 2.0 redesign, emoji picker, new packs, backup, and faster engine.
+ </p>
+
+ <ul class="features">
+ <li>
+ <span class="ico">📓</span>
+ <div class="text">
+ <h3 data-i18n="changelogNotebookTitle">NotebookLM compatibility</h3>
+ <p data-i18n="changelogNotebookBody">TrueMoji now detects emojis inside NotebookLM quizzes, flashcards, and other delayed Shadow DOM surfaces.</p>
+ </div>
+ </li>
+ <li>
+ <span class="ico">🎨</span>
+ <div class="text">
+ <h3 data-i18n="changelogDesignTitle">Brand-new design</h3>
+ <p data-i18n="changelogDesignBody">Warm, sunny look that matches the TrueMoji logo crafted for both light and dark themes.</p>
+ </div>
+ </li>
+ <li>
+ <span class="ico">📦</span>
+ <div class="text">
+ <h3 data-i18n="changelogPacksTitle">Three new emoji packs</h3>
+ <p data-i18n="changelogPacksBody">Twemoji 15, Google Noto Color, and Microsoft Fluent Flat alongside the existing Apple, Google, Fluent 3D, Twitter, Facebook, and OpenMoji.</p>
+ </div>
+ </li>
+ <li>
+ <span class="ico">🔍</span>
+ <div class="text">
+ <h3 data-i18n="changelogPickerTitle">Built-in emoji picker</h3>
+ <p data-i18n="changelogPickerBody">Search, browse, and copy any emoji in your selected pack's style. Recents and favorites are saved automatically.</p>
+ </div>
+ </li>
+ <li>
+ <span class="ico">💾</span>
+ <div class="text">
+ <h3 data-i18n="changelogBackupTitle">Settings backup &amp; restore</h3>
+ <p data-i18n="changelogBackupBody">Export all your TrueMoji preferences to a JSON file and import them back on another device.</p>
+ </div>
+ </li>
+ <li>
+ <span class="ico">⚡</span>
+ <div class="text">
+ <h3 data-i18n="changelogEngineTitle">Faster, more reliable engine</h3>
+ <p data-i18n="changelogEngineBody">Pinned CDN versions, smarter pack fallback, and per-set availability checks mean fewer broken images.</p>
+ </div>
+ </li>
+ </ul>
+
+ <div class="actions">
+ <button class="tm-btn tm-btn-primary" id="closeBtn" data-i18n="finish">Get started</button>
+ </div>
+ </div>
+
+ <script src="i18n.js"></script>
+ <script src="changelog.js"></script>
+</body>
+
+</html>

@@ -1,4 +1,3 @@
-/* TrueMoji v2 options page controller. */
 (function () {
  'use strict';
 
@@ -63,7 +62,6 @@
  setTimeout(function () { els.toast.classList.remove('is-visible'); }, 2200);
  }
 
- /* ---- Pack picker (large grid) ---- */
 
  function buildSelectOptions() {
  els.customSetSelect.innerHTML = '';
@@ -145,7 +143,6 @@
  pill.textContent = on ? tr('statusOn') : tr('statusOff');
  }
 
- /* ---- Live preview ---- */
 
  var EMOJI_PATTERN = /(\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:[\u{1F3FB}-\u{1F3FF}](?:\uFE0F|\uFE0E)?)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:[\u{1F3FB}-\u{1F3FF}](?:\uFE0F|\uFE0E)?)?)*|[\u{1F1E6}-\u{1F1FF}]{2})/gu;
  var SAMPLE = '😀 😎 ❤️ 🔥 👍 🎉 🌟 🚀 🎯 🥳';
@@ -182,7 +179,6 @@
  if (els.allEmojis.style.display !== 'none') renderAllEmojis();
  }
 
- /* ---- Full preview (categorized) ---- */
 
  var CHUNK_SIZE = 2;
  var renderedSections = 0;
@@ -242,7 +238,6 @@
  els.allEmojis.appendChild(moreBtn);
  }
 
- /* ---- Custom rules ---- */
 
  function renderCustomRules() {
  els.customRulesList.innerHTML = '';
@@ -281,12 +276,11 @@
  });
  }
 
- /* ---- Backup / restore ---- */
 
  function exportSettings() {
  chrome.storage.sync.get(null, function (data) {
  var blob = new Blob([JSON.stringify({
- version: '2.0.0',
+ version: '2.0.1',
  exportedAt: new Date().toISOString(),
  settings: data
  }, null, 2)], { type: 'application/json' });
@@ -332,7 +326,6 @@
  });
  }
 
- /* ---- Dataset ---- */
 
  function loadDataset(cb) {
  chrome.storage.local.get([DATASET_CACHE_KEY], function (res) {
@@ -368,7 +361,6 @@
  return { byUnified: byUnified, flat: flat };
  }
 
- /* ---- Wiring ---- */
 
  function applyAllText() {
  applyLanguage(state.lang);
@@ -403,7 +395,6 @@
  });
  });
 
- /* Toggles */
  els.enabled.addEventListener('change', function () {
  state.enabled = els.enabled.checked;
  updatePillStatus(els.enabledStatus, state.enabled);
@@ -430,7 +421,6 @@
  chrome.storage.sync.set({ emojiSize: state.emojiSize });
  });
 
- /* Excluded domains */
  els.excludeList.addEventListener('change', function () {
  var raw = els.excludeList.value;
  var cleaned = raw.split('\n').map(function (line) {
@@ -448,7 +438,6 @@
  chrome.storage.sync.set({ excludedDomains: cleaned });
  });
 
- /* Shortcut */
  els.shortcutInput.addEventListener('keydown', function (e) {
  e.preventDefault();
  e.stopPropagation();
@@ -473,7 +462,6 @@
  chrome.storage.sync.set({ shortcutKey: '' });
  });
 
- /* Custom rules */
  els.addRuleBtn.addEventListener('click', function () {
  var raw = els.customDomainInput.value.trim();
  var domain = '';
@@ -494,7 +482,6 @@
  els.customDomainInput.value = '';
  });
 
- /* Backup */
  els.exportBtn.addEventListener('click', exportSettings);
  els.importBtn.addEventListener('click', function () { els.importFile.click(); });
  els.importFile.addEventListener('change', function () {
@@ -502,7 +489,6 @@
  });
  els.resetBtn.addEventListener('click', resetSettings);
 
- /* Misc */
  els.langToggle.addEventListener('click', function () {
  state.lang = state.lang === 'en' ? 'ar' : 'en';
  chrome.storage.sync.set({ lang: state.lang });
@@ -532,7 +518,6 @@
  chrome.tabs.create({ url: url });
  });
 
- /* Sync external changes */
  chrome.storage.onChanged.addListener(function (changes, area) {
  if (area !== 'sync') return;
  Object.keys(changes).forEach(function (k) {

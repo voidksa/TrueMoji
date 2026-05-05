@@ -1,15 +1,9 @@
-/* TrueMoji v2 UI translations.
- * applyLanguage() walks data-i18n / data-i18n-title / data-i18n-placeholder
- * attributes and swaps text/title/placeholder for the active language.
- */
 const TRANSLATIONS = {
  en: {
- /* Brand */
  title: "TrueMoji",
  tagline: "Replace native emojis with beautiful image sets",
- versionPill: "v2.0",
+ versionPill: "v2.0.1",
 
- /* Common */
  statusOn: "On",
  statusOff: "Off",
  cancel: "Cancel",
@@ -28,7 +22,6 @@ const TRANSLATIONS = {
  poweredBy: "Built with care",
  privacyLink: "Privacy",
 
- /* Sections */
  generalSettings: "General",
  emojiStyle: "Emoji Pack",
  interactionSettings: "Interaction",
@@ -36,7 +29,6 @@ const TRANSLATIONS = {
  advancedSettings: "Advanced",
  backupSection: "Backup & Restore",
 
- /* Toggles */
  enableLabel: "Enable TrueMoji",
  enableHint: "Master switch for all emoji replacement.",
  autoReloadLabel: "Auto-reload pages",
@@ -47,7 +39,6 @@ const TRANSLATIONS = {
  showOriginalHint: "Reveal the native emoji when hovering over a replaced image.",
  excludeSite: "Disable on this site",
 
- /* Pack picker */
  setLabel: "Image set",
  pickPackHint: "Tap a pack to switch instantly.",
  livePreviewLabel: "Live preview",
@@ -56,17 +47,14 @@ const TRANSLATIONS = {
  loadMore: "Load more",
  packCountSuffix: "packs",
 
- /* Emoji size */
  emojiSizeLabel: "Emoji size",
  emojiSizeHint: "Scale image emojis from 1.0× to 1.5× the surrounding text.",
 
- /* Shortcut */
  shortcutLabel: "Toggle shortcut",
  shortcutHint: "Click the field, then press a key combination to toggle TrueMoji on or off.",
  shortcutPlaceholder: "Click and press keys",
  clearShortcut: "Clear shortcut",
 
- /* Domains */
  excludeListLabel: "Excluded domains",
  excludeListHint: "Domains where TrueMoji should stay disabled (one per line).",
  excludePlaceholder: "example.com\ndocs.google.com",
@@ -77,7 +65,6 @@ const TRANSLATIONS = {
  removeRule: "Remove",
  noCustomRules: "No custom rules yet.",
 
- /* Backup */
  exportLabel: "Export settings",
  exportHint: "Download a JSON file with all your TrueMoji preferences.",
  exportBtn: "Download backup",
@@ -91,7 +78,6 @@ const TRANSLATIONS = {
  resetBtn: "Reset",
  resetConfirm: "Reset all settings to defaults? This cannot be undone.",
 
- /* Picker */
  pickerTitle: "Emoji Picker",
  pickerSearchPlaceholder: "Search emojis…",
  pickerNoResults: "No emojis match that search.",
@@ -109,7 +95,6 @@ const TRANSLATIONS = {
  catSymbols: "Symbols",
  catFlags: "Flags",
 
- /* Pack labels */
  apple: "Apple",
  google: "Google",
  fluent: "Fluent 3D",
@@ -121,7 +106,6 @@ const TRANSLATIONS = {
  openmoji: "OpenMoji",
  system: "System",
 
- /* Onboarding */
  welcomeTitle: "Welcome to TrueMoji",
  welcomeBody: "A quick three-step tour and you're set.",
  pickLanguage: "Choose your language",
@@ -129,11 +113,22 @@ const TRANSLATIONS = {
  pickShortcut: "Optional: bind a toggle shortcut",
  finish: "Get started",
 
- /* Changelog */
+ whatsNewTitle: "TrueMoji 2.0.1 What's new",
  whatsNew: "What's new",
- whatsNewBody: "TrueMoji 2.0 brings a fresh look, three new emoji packs, an emoji picker, settings backup, and a faster engine.",
+ whatsNewBody: "TrueMoji 2.0.1 adds NotebookLM compatibility on top of the TrueMoji 2.0 redesign, emoji picker, new packs, backup, and faster engine.",
+ changelogNotebookTitle: "NotebookLM compatibility",
+ changelogNotebookBody: "TrueMoji now detects emojis inside NotebookLM quizzes, flashcards, and other delayed Shadow DOM surfaces.",
+ changelogDesignTitle: "Brand-new design",
+ changelogDesignBody: "Warm, sunny look that matches the TrueMoji logo crafted for both light and dark themes.",
+ changelogPacksTitle: "Three new emoji packs",
+ changelogPacksBody: "Twemoji 15, Google Noto Color, and Microsoft Fluent Flat alongside the existing Apple, Google, Fluent 3D, Twitter, Facebook, and OpenMoji.",
+ changelogPickerTitle: "Built-in emoji picker",
+ changelogPickerBody: "Search, browse, and copy any emoji in your selected pack's style. Recents and favorites are saved automatically.",
+ changelogBackupTitle: "Settings backup & restore",
+ changelogBackupBody: "Export all your TrueMoji preferences to a JSON file and import them back on another device.",
+ changelogEngineTitle: "Faster, more reliable engine",
+ changelogEngineBody: "Pinned CDN versions, smarter pack fallback, and per-set availability checks mean fewer broken images.",
 
- /* Misc */
  reloadTab: "Reload tab",
  reloadTabBtn: "Reload current tab",
  quickActions: "Quick actions",
@@ -142,10 +137,9 @@ const TRANSLATIONS = {
  preview: "Live Preview",
  sampleSentence: "Hi 👋 click any pack to see the difference 🔥 ✨ 😎",
 
- /* Privacy page */
  privacyEyebrow: "Legal",
  privacyTitle: "Privacy Policy",
- privacyVersion: "Version 2.0.0",
+ privacyVersion: "Version 2.0.1",
  privacyLastUpdated: "Last updated: April 2026",
  privacyKeypoint: "TrueMoji does not collect, store, share, or sell any personal information. No telemetry, no analytics, no tracking. Ever.",
  privacyHData: "Data Collection",
@@ -177,7 +171,7 @@ const TRANSLATIONS = {
  ar: {
  title: "TrueMoji",
  tagline: "استبدل الإيموجي الأصلي بصور عالية الجودة",
- versionPill: "v2.0",
+ versionPill: "v2.0.1",
 
  statusOn: "مفعل",
  statusOff: "معطل",
@@ -288,8 +282,21 @@ const TRANSLATIONS = {
  pickShortcut: "اختياري: اربط اختصار للتبديل",
  finish: "ابدأ",
 
+ whatsNewTitle: "الجديد في TrueMoji 2.0.1",
  whatsNew: "الجديد",
- whatsNewBody: "TrueMoji 2.0 يجي بتصميم جديد، ثلاث حزم إيموجي جديدة، متصفح إيموجي، نسخ احتياطي للإعدادات، ومحرك أسرع.",
+ whatsNewBody: "TrueMoji 2.0.1 يضيف توافق NotebookLM فوق تحديث TrueMoji 2.0 الذي جلب التصميم الجديد، متصفح الإيموجي، الحزم الجديدة، النسخ الاحتياطي، والمحرك الأسرع.",
+ changelogNotebookTitle: "دعم NotebookLM",
+ changelogNotebookBody: "TrueMoji صار يلتقط الإيموجي داخل اختبارات NotebookLM، البطاقات التعليمية، وأجزاء Shadow DOM التي تظهر متأخرة.",
+ changelogDesignTitle: "تصميم جديد بالكامل",
+ changelogDesignBody: "مظهر دافئ ومشرق يطابق شعار TrueMoji ومجهز للوضعين الفاتح والداكن.",
+ changelogPacksTitle: "ثلاث حزم إيموجي جديدة",
+ changelogPacksBody: "Twemoji 15 وGoogle Noto Color وMicrosoft Fluent Flat بجانب حزم Apple وGoogle وFluent 3D وTwitter وFacebook وOpenMoji.",
+ changelogPickerTitle: "متصفح إيموجي مدمج",
+ changelogPickerBody: "ابحث وتصفح وانسخ أي إيموجي بنمط الحزمة المختارة، مع حفظ الأخيرة والمفضلة تلقائياً.",
+ changelogBackupTitle: "نسخ احتياطي واستعادة للإعدادات",
+ changelogBackupBody: "صدّر كل تفضيلات TrueMoji إلى ملف JSON واستوردها لاحقاً على جهاز آخر.",
+ changelogEngineTitle: "محرك أسرع وأكثر ثباتاً",
+ changelogEngineBody: "تثبيت إصدارات CDN، رجوع أذكى للحزم، وفحص توفر كل مجموعة يقلل الصور المعطلة.",
 
  reloadTab: "إعادة تحميل",
  reloadTabBtn: "إعادة تحميل التبويب",
@@ -299,10 +306,9 @@ const TRANSLATIONS = {
  preview: "معاينة فورية",
  sampleSentence: "هلا 👋 جرب تنقر أي حزمة 😎 وشف الفرق 🔥 ✨",
 
- /* Privacy page */
  privacyEyebrow: "قانوني",
  privacyTitle: "سياسة الخصوصية",
- privacyVersion: "الإصدار 2.0.0",
+ privacyVersion: "الإصدار 2.0.1",
  privacyLastUpdated: "آخر تحديث: أبريل 2026",
  privacyKeypoint: "TrueMoji لا يجمع، لا يخزّن، لا يشارك، ولا يبيع أي معلومات شخصية. ما في تتبع، ما في تحليلات، ما في إحصاءات. أبداً.",
  privacyHData: "جمع البيانات",

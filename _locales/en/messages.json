@@ -1,0 +1,14 @@
+{
+ "appName": {
+ "message": "TrueMoji",
+ "description": "Extension display name."
+ },
+ "appDesc": {
+ "message": "Replace native browser emojis with beautiful image sets Apple, Google, Twemoji, Fluent, and more.",
+ "description": "Chrome Web Store description."
+ },
+ "actionTitle": {
+ "message": "TrueMoji switch emoji pack",
+ "description": "Tooltip on the toolbar icon."
+ }
+}
