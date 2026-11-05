@@ -64,7 +64,31 @@ chrome.action.onClicked.addListener(() => {
  chrome.action.setBadgeText({ text: '' });
 });
 
+// KEEP FORK 2.0.1.5 (11-05-2026): one message for many images, and a memory cache shared by every tab,
+// so a page does not wait on one round trip per emoji and a second page gets its images at once.
+const IMG_CACHE = new Map();
+function fetchDataUri(url) {
+ if (IMG_CACHE.has(url)) return IMG_CACHE.get(url);
+ const p = fetch(url)
+ .then((res) => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.blob(); })
+ .then((blob) => new Promise((resolve, reject) => {
+ const reader = new FileReader();
+ reader.onloadend = () => resolve(reader.result);
+ reader.onerror = () => reject(reader.error);
+ reader.readAsDataURL(blob);
+ }))
+ .catch((err) => { IMG_CACHE.delete(url); throw err; });
+ IMG_CACHE.set(url, p);
+ if (IMG_CACHE.size > 3000) IMG_CACHE.delete(IMG_CACHE.keys().next().value);
+ return p;
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+ if (request && request.action === 'fetch_image_blobs' && Array.isArray(request.urls)) {
+ Promise.all(request.urls.map((u) => fetchDataUri(u).then((d) => [u, d], () => [u, null])))
+ .then((pairs) => { const out = {}; pairs.forEach(([u, d]) => { out[u] = d; }); sendResponse({ results: out }); });
+ return true;
+ }
  if (request && request.action === 'fetch_image_blob' && request.url) {
  fetch(request.url)
  .then((res) => {
