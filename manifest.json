@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "__MSG_appName__",
-    "version": "2.0.1",
+    "version": "2.0.1.5",
     "description": "__MSG_appDesc__",
     "default_locale": "en",
     "icons": {
@@ -32,6 +32,17 @@
         "service_worker": "background.js"
     },
     "content_scripts": [
+        {
+            "matches": [
+                "https://docs.google.com/document/*"
+            ],
+            "js": [
+                "docs-annotate.js"
+            ],
+            "run_at": "document_start",
+            "world": "MAIN",
+            "all_frames": false
+        },
         {
             "matches": [
                 "<all_urls>"
