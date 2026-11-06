@@ -2,7 +2,7 @@
 
 A fork of [TrueMoji](https://github.com/voidksa/TrueMoji) by **voidksa**, the Chrome extension that swaps your system emoji for Apple, Google, Twemoji, Fluent and other image sets. All the credit for the extension itself goes to voidksa. This fork adds three things I needed every day and could not get from the store build.
 
-Based on TrueMoji 2.0.1. Fork version 2.0.1.5.
+Based on TrueMoji 2.0.1. Fork version 2.0.1.6.
 
 ## What this fork adds
 
@@ -22,6 +22,10 @@ This fork never touches the text inside an editor:
 Google Docs draws the whole document body on a canvas. Dark Reader's Filter mode inverts that canvas, so every emoji in the body comes out with inverted colors (yellow faces turn blue). This is Dark Reader issue #8730, and no generic extension can split a canvas.
 
 This fork asks Docs for its annotated canvas. `docs-annotate.js` runs in the page before Docs starts and sets `_docs_annotate_canvas_by_ext`, the same switch writing extensions use to get Docs' screen reader layer. Docs then adds an invisible rect with the text, font and position of every run. The content script measures each emoji with that font and lays a small page colored card with the Apple image over it inside the same tile, so it scrolls and zooms with the page. Under Filter mode the card goes dark with the page and Dark Reader's own image rule keeps the emoji in its real colors.
+
+### Apple emoji in the Google Docs title
+
+The doc title is a text field, which cannot hold images, with a hidden sizing label behind it that holds the same text. The store build swaps the emoji in that label, so the title showed each emoji twice, once from the system font and once as an Apple image. This fork makes the field's own text transparent while you are not editing the title, so only the label with the Apple emoji shows. While you edit the title the label hides and the field works exactly as normal.
 
 ### A speed pass
 
@@ -45,7 +49,7 @@ Everywhere else the fork behaves like TrueMoji 2.0.1: same packs, picker, popup,
 
 ## Install (unpacked)
 
-1. Download `TrueMoji-keep-fork-2.0.1.5.zip` from the [latest release](https://github.com/firestarter1996/TrueMoji/releases/latest) and unzip it, or clone this repo.
+1. Download `TrueMoji-keep-fork-2.0.1.6.zip` from the [latest release](https://github.com/firestarter1996/TrueMoji/releases/latest) and unzip it, or clone this repo.
 2. Open `chrome://extensions` and turn on Developer mode.
 3. Click Load unpacked and pick the folder that holds `manifest.json`.
 4. If the store copy of TrueMoji is installed, turn it off so only one copy runs.

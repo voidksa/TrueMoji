@@ -1,88 +1,88 @@
 {
-    "manifest_version": 3,
-    "name": "__MSG_appName__",
-    "version": "2.0.1.5",
-    "description": "__MSG_appDesc__",
-    "default_locale": "en",
-    "icons": {
-        "16": "icons/icon_16x16.png",
-        "48": "icons/icon_48x48.png",
-        "128": "icons/icon_128x128.png",
-        "512": "icons/icon_512x512.png"
+  "action": {
+    "default_icon": {
+      "128": "icons/icon_128x128.png",
+      "16": "icons/icon_16x16.png",
+      "32": "icons/icon_48x48.png",
+      "48": "icons/icon_48x48.png"
     },
-    "permissions": [
-        "storage",
-        "tabs",
-        "contextMenus",
-        "declarativeNetRequest"
-    ],
-    "host_permissions": [
+    "default_popup": "popup.html",
+    "default_title": "__MSG_actionTitle__"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://docs.google.com/document/*"
+      ],
+      "js": [
+        "docs-annotate.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "all_frames": true,
+      "js": [
+        "packs.js",
+        "content.js"
+      ],
+      "match_about_blank": true,
+      "match_origin_as_fallback": true,
+      "matches": [
         "<all_urls>"
-    ],
-    "declarative_net_request": {
-        "rule_resources": [
-            {
-                "id": "ruleset_1",
-                "enabled": true,
-                "path": "rules.json"
-            }
-        ]
-    },
-    "background": {
-        "service_worker": "background.js"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "https://docs.google.com/document/*"
-            ],
-            "js": [
-                "docs-annotate.js"
-            ],
-            "run_at": "document_start",
-            "world": "MAIN",
-            "all_frames": false
-        },
-        {
-            "matches": [
-                "<all_urls>"
-            ],
-            "js": [
-                "packs.js",
-                "content.js"
-            ],
-            "run_at": "document_idle",
-            "all_frames": true,
-            "match_about_blank": true,
-            "match_origin_as_fallback": true
-        }
-    ],
-    "options_page": "options.html",
-    "action": {
-        "default_title": "__MSG_actionTitle__",
-        "default_popup": "popup.html",
-        "default_icon": {
-            "16": "icons/icon_16x16.png",
-            "32": "icons/icon_48x48.png",
-            "48": "icons/icon_48x48.png",
-            "128": "icons/icon_128x128.png"
-        }
-    },
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "picker.html",
-                "onboarding.html",
-                "changelog.html",
-                "PRIVACY.html",
-                "theme.css",
-                "packs.js",
-                "i18n.js",
-                "icons/*"
-            ],
-            "matches": [
-                "<all_urls>"
-            ]
-        }
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "enabled": true,
+        "id": "ruleset_1",
+        "path": "rules.json"
+      }
     ]
+  },
+  "default_locale": "en",
+  "description": "__MSG_appDesc__",
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "icons": {
+    "128": "icons/icon_128x128.png",
+    "16": "icons/icon_16x16.png",
+    "48": "icons/icon_48x48.png",
+    "512": "icons/icon_512x512.png"
+  },
+  "manifest_version": 3,
+  "name": "__MSG_appName__",
+  "options_page": "options.html",
+  "permissions": [
+    "storage",
+    "tabs",
+    "contextMenus",
+    "declarativeNetRequest"
+  ],
+  "version": "2.0.1.6",
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "picker.html",
+        "onboarding.html",
+        "changelog.html",
+        "PRIVACY.html",
+        "theme.css",
+        "packs.js",
+        "i18n.js",
+        "icons/*"
+      ]
+    }
+  ]
 }

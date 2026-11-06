@@ -879,8 +879,42 @@
  }
  while (layer.children.length > items.length) layer.removeChild(layer.lastChild);
  }
+ // Doc title (2.0.1.6, 11-06-2026): the title is an <input> (no images possible) with a sizing label behind it that
+ // holds the same text. TrueMoji drew Apple images in the label while the input still drew the system emoji, so both
+ // showed side by side. While the title is not being edited, the input's text is made transparent and the label (with
+ // the Apple images) is what shows; while it is being edited, the label is hidden and the input shows as normal.
+ var titleStyled = false;
+ function docsTitleSync() {
+ var inp = document.querySelector('input.docs-title-input');
+ var lab = document.querySelector('.docs-title-input-label');
+ if (!inp || !lab) return;
+ if (!titleStyled) {
+ titleStyled = true;
+ var st = document.createElement('style');
+ st.setAttribute('data-truemoji', 'docs-title');
+ st.textContent = 'input.docs-title-input.tm-title-quiet{color:transparent !important;-webkit-text-fill-color:transparent !important}' +
+ '.docs-title-input-label.tm-title-show{visibility:visible !important;pointer-events:none !important}' +
+ '.docs-title-input-label.tm-title-show *{visibility:visible !important}' +
+ '.docs-title-input-label.tm-title-off{visibility:hidden !important}';
+ (document.head || document.documentElement).appendChild(st);
+ }
+ var editing = document.activeElement === inp;
+ var inputShown = inp.style.visibility !== 'hidden' && getComputedStyle(inp).visibility !== 'hidden';
+ var quiet = inputShown && !editing && hasEmoji(inp.value || '');
+ var col = quiet && !inp.classList.contains('tm-title-quiet') ? getComputedStyle(inp).color : null;
+ if (col) lab.setAttribute('data-tm-c', col);
+ inp.classList.toggle('tm-title-quiet', quiet);
+ lab.classList.toggle('tm-title-show', quiet);
+ lab.classList.toggle('tm-title-off', inputShown && editing);
+ if (quiet) lab.style.setProperty('color', lab.getAttribute('data-tm-c') || 'inherit', 'important');
+ else lab.style.removeProperty('color');
+ }
  function docsStart() {
  if (!DOCS_MODE) return;
+ document.addEventListener('focusin', docsTitleSync, true);
+ document.addEventListener('focusout', function () { setTimeout(docsTitleSync, 0); }, true);
+ setInterval(docsTitleSync, 1000);
+ docsTitleSync();
  window.addEventListener('resize', docsSchedule, { passive: true });
  // Docs swaps tiles while scrolling; the observer catches it, this catches zoom and layout shifts.
  setInterval(docsSchedule, 1000);
